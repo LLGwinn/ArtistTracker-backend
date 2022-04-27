@@ -2,6 +2,7 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
+const { sqlForUpdate } = require("../helpers/sqlUpdate")
 const {
   NotFoundError,
   BadRequestError,
@@ -13,22 +14,23 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 /** Related functions for users. */
 
 class User {
-  /** authenticate user with username, password.
+
+  /** Authenticate user with username, password.
+   *  Returns { username, firstName, email, city, distancePref, isAdmin }
    *
-   * Returns { username, firstName, email, city, distancePref }
-   *
-   * Throws UnauthorizedError is user not found or wrong password.
+   *  Throws UnauthorizedError is user not found or wrong password.
    **/
 
   static async authenticate(username, password) {
-    // try to find the user first
+    // look for user in database
     const result = await db.query(
           `SELECT username,
                   password,
                   fname AS "firstName",
                   email,
                   base_city AS "city",
-                  distance_pref AS "distancePref"
+                  distance_pref AS "distancePref",
+                  is_admin
            FROM users
            WHERE username = $1`,
         [username],
@@ -49,14 +51,14 @@ class User {
   }
 
   /** Register user with data.
+   *  Returns { username, firstName, email, city, distancePref, isAdmin }
    *
-   * Returns { username, firstName, email, city, distancePref }
-   *
-   * Throws BadRequestError on duplicates.
+   *  Throws BadRequestError on duplicates.
    **/
 
   static async register(
-      { username, password, firstName, email, city, distancePref }) {
+      { username, password, firstName, email, city, distancePref, isAdmin }) {
+    // look for duplicate username in database
     const duplicateCheck = await db.query(
           `SELECT username
            FROM users
@@ -77,16 +79,19 @@ class User {
             fname,
             email,
             base_city,
-            distance_pref)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING username, fname AS "firstName", email, base_city AS "city", distance_pref AS "distancePref"`,
+            distance_pref,
+            is_admin)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           RETURNING username, fname AS "firstName", email, base_city AS "city", 
+                     distance_pref AS "distancePref", is_admin AS "isAdmin"`,
         [
           username,
           hashedPassword,
           firstName,
           email,
           city,
-          distancePref
+          distancePref,
+          isAdmin
         ],
     );
 
@@ -97,7 +102,7 @@ class User {
 
   /** Find all users.
    *
-   * Returns [{ username, firstName, email, city, distancePref }, ...]
+   * Returns [{ username, firstName, email, city, distancePref, isAdmin }, ...]
    **/
 
   static async findAll() {
@@ -106,7 +111,8 @@ class User {
                   fname AS "firstName",
                   email,
                   base_city AS "city",
-                  distance_pref AS "distancePref"
+                  distance_pref AS "distancePref",
+                  is_admin
            FROM users
            ORDER BY username`,
     );
@@ -119,6 +125,7 @@ class User {
    * Returns { username, firstName, artists, events }
    *   where artists is { id, artist_name }
    *   and events is {id, event_name}
+   *  TODO: need to fix the artists/events return
    *
    * Throws NotFoundError if user not found.
    **/
@@ -159,36 +166,38 @@ class User {
    *
    */
 
-  // static async update(username, data) {
-  //   if (data.password) {
-  //     data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
-  //   }
+  static async update(username, data) {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+    }
 
-  //   const { setCols, values } = sqlForPartialUpdate(
-  //       data,
-  //       {
-  //         firstName: "first_name",
-  //         lastName: "last_name",
-  //         isAdmin: "is_admin",
-  //       });
-  //   const usernameVarIdx = "$" + (values.length + 1);
+    const { setCols, values } = sqlForUpdate(
+        data,
+        {
+          firstName: "fname",
+          city: "base_city",
+          distancePref: "distance_pref",
+          isAdmin: "is_admin"
+        });
+    const usernameVarIdx = "$" + (values.length + 1);
 
-  //   const querySql = `UPDATE users 
-  //                     SET ${setCols} 
-  //                     WHERE username = ${usernameVarIdx} 
-  //                     RETURNING username,
-  //                               first_name AS "firstName",
-  //                               last_name AS "lastName",
-  //                               email,
-  //                               is_admin AS "isAdmin"`;
-  //   const result = await db.query(querySql, [...values, username]);
-  //   const user = result.rows[0];
+    const querySql = `UPDATE users 
+                      SET ${setCols} 
+                      WHERE username = ${usernameVarIdx} 
+                      RETURNING username,
+                                fname AS "firstName",
+                                email,
+                                base_city AS "city",
+                                distance_pref AS "distance_pref",
+                                is_admin AS "isAdmin"`;
+    const result = await db.query(querySql, [...values, username]);
+    const user = result.rows[0];
 
-  //   if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user: ${username}`);
 
-  //   delete user.password;
-  //   return user;
-  // }
+    delete user.password;
+    return user;
+  }
 
   /** Delete given user from database; returns undefined. */
 
