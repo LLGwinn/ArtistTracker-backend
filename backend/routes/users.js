@@ -17,25 +17,25 @@ const router = express.Router();
 
 /** POST /users/ { user }  => { user, token }
  *
- * Adds a new user. This is not the registration endpoint! 
- * This is only for admin users to add new users. The new user being added 
- * can be an admin.
+ *  Adds new user. This is not the registration endpoint!
+ *  This is only for admin users to add new users. 
+ *  New user being added can be an admin.
  *
- * This returns the newly created user and an authentication token for them:
+ *  Returns newly created user and an authentication token for them:
  *  {user: { username, firstName, email, city, distancePref, isAdmin }, token }
  *
- * Authorization required: user must be logged in as admin
+ *  Authorization required: admin
+ *  
  **/
 
-router.post("/", ensureAdmin, async function (req, res, next) {
+router.post("/", async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, newUserSchema);
+    const validator = jsonschema.validate(req.body, userNewSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
-
-    const user = await User.register(req.body);
+    const user = await User.registerUser(req.body);
     const token = createToken(user);
     return res.status(201).json({ user, token });
   } catch (err) {
@@ -44,15 +44,15 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 });
 
 
-/** GET /users => { users: [ {username, firstName, email, city, distancePref, isAdmin }, ... ] }
+/** GET /users => { users: [ {username, firstName, lastName, email }, ... ] }
  *  Returns list of all users.
  *
- * Authorization required: must be logged in as admin user
+ *  Authorization required: admin
  **/
 
-router.get("/", ensureAdmin, async function (req, res, next) {
+ router.get("/", ensureAdmin, async function (req, res, next) {
   try {
-    const users = await User.findAll();
+    const users = await User.findAllUsers();
     return res.json({ users });
   } catch (err) {
     return next(err);
@@ -69,7 +69,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 
 router.get("/:username", ensureCorrectUser, async function (req, res, next) {
   try {
-    const user = await User.get(req.params.username);
+    const user = await User.getUser(req.params.username);
     return res.json({ user });
   } catch (err) {
     return next(err);
@@ -95,7 +95,7 @@ router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const user = await User.update(req.params.username, req.body);
+    const user = await User.updateUser(req.params.username, req.body);
     return res.json({ user });
   } catch (err) {
     return next(err);
@@ -110,7 +110,7 @@ router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
 
 router.delete("/:username", ensureCorrectUser, async function (req, res, next) {
   try {
-    await User.remove(req.params.username);
+    await User.removeUser(req.params.username);
     return res.json({ deleted: req.params.username });
   } catch (err) {
     return next(err);

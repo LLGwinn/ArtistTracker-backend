@@ -7,7 +7,7 @@ const { NotFoundError } = require("./errors");
 
 const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
-// const companiesRoutes = require("./routes/companies");
+const artistsRoutes = require("./routes/artists");
 const usersRoutes = require('./routes/users');
 // const jobsRoutes = require("./routes/jobs");
 
@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(authenticateJWT);
 
 app.use("/auth", authRoutes);
-// app.use("/companies", companiesRoutes);
+app.use("/artists", artistsRoutes);
 app.use("/users", usersRoutes);
 // app.use("/jobs", jobsRoutes);
 

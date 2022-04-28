@@ -105,7 +105,7 @@ class User {
    * Returns [{ username, firstName, email, city, distancePref, isAdmin }, ...]
    **/
 
-  static async findAll() {
+  static async findAllUsers() {
     const result = await db.query(
           `SELECT username,
                   fname AS "firstName",
@@ -130,7 +130,7 @@ class User {
    * Throws NotFoundError if user not found.
    **/
 
-  static async get(username) {
+  static async getUser(username) {
     const userRes = await db.query(
           `SELECT username,
                   fname AS "firstName"
@@ -166,7 +166,7 @@ class User {
    *
    */
 
-  static async update(username, data) {
+  static async updateUser(username, data) {
     if (data.password) {
       data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
     }
@@ -201,7 +201,7 @@ class User {
 
   /** Delete given user from database; returns undefined. */
 
-  static async remove(username) {
+  static async removeUser(username) {
     let result = await db.query(
           `DELETE
            FROM users
