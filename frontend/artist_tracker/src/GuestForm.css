@@ -1,0 +1,9 @@
+.GuestForm {
+    border: red solid 1px;
+    padding: 10px;
+  }
+
+.GuestForm input {
+  width: 50%;
+  margin: auto;
+}
