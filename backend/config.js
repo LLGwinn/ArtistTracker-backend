@@ -1,11 +1,17 @@
 "use strict";
 
+//require("dotenv").config({path:__dirname+'/home/ells/Bootcamp/Capstone-2/backend/.env'});
+//require("dotenv").config({path:__dirname+'.env'});
 require("dotenv").config();
+//console.log(require("dotenv").config())
+require("colors");
 require("colors");
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret-capstone2";
 
 const PORT = +process.env.PORT || 3001; 
+
+const TICKETMASTER_API_KEY = process.env.TICKETMASTER_API_KEY;
 
 // Use dev database, testing database, or via env var, production database
 function getDatabaseUri() {
@@ -24,6 +30,7 @@ console.log("---");
 module.exports = {
   SECRET_KEY,
   PORT,
+  TICKETMASTER_API_KEY,
   BCRYPT_WORK_FACTOR,
   getDatabaseUri,
 };

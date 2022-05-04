@@ -1,0 +1,8 @@
+.UnauthorizedMessage {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.UnauthorizedMessage button {
+    margin-right: 10px;
+}

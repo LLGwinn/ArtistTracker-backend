@@ -1,0 +1,11 @@
+.SignupForm {
+    text-align: left;
+    justify-content: left;
+    padding: 10px;
+}
+
+::placeholder { 
+    font-style: italic;
+    color: lightgray;
+    font-size: smaller;
+  }

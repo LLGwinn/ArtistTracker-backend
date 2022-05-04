@@ -9,20 +9,22 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const artistsRoutes = require("./routes/artists");
 const usersRoutes = require('./routes/users');
+const extApiRoutes = require('./routes/extAPI');
 // const jobsRoutes = require("./routes/jobs");
 
-//const morgan = require("morgan");
+const morgan = require("morgan");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-//app.use(morgan("tiny"));
+app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
 app.use("/auth", authRoutes);
 app.use("/artists", artistsRoutes);
 app.use("/users", usersRoutes);
+app.use("/search", extApiRoutes);
 // app.use("/jobs", jobsRoutes);
 
 

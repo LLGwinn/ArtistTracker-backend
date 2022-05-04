@@ -30,12 +30,12 @@ const router = express.Router();
 
 router.post("/", async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, userNewSchema);
+    const validator = jsonschema.validate(req.body, newUserSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
-    const user = await User.registerUser(req.body);
+    const user = await User.register(req.body);
     const token = createToken(user);
     return res.status(201).json({ user, token });
   } catch (err) {
@@ -60,16 +60,16 @@ router.post("/", async function (req, res, next) {
 });
 
 
-/** GET users/[username] => { user }
+/** GET users/[id] => { user }
  *  Returns { username, firstName, email, city, distancePref, isAdmin, artists, events }
  *        where artist is { artist_id, artist_name } and event is {event_id, event_name} 
  * TODO: How do I list the artists and events?
  * Authorization required: must be logged in as correct user or as admin.
  **/
 
-router.get("/:username", ensureCorrectUser, async function (req, res, next) {
+router.get("/:id", ensureCorrectUser, async function (req, res, next) {
   try {
-    const user = await User.getUser(req.params.username);
+    const user = await User.getUser(+req.params.id);
     return res.json({ user });
   } catch (err) {
     return next(err);
@@ -77,7 +77,7 @@ router.get("/:username", ensureCorrectUser, async function (req, res, next) {
 });
 
 
-/** PATCH /users/[username] { user } => { user }
+/** PATCH /users/[id] { user } => { user }
  *
  * Data can include:
  *   { firstName, password, email, city, distancePref }
@@ -87,7 +87,7 @@ router.get("/:username", ensureCorrectUser, async function (req, res, next) {
  * Authorization required: must be logged in as correct user or as admin.
  **/
 
-router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
+router.patch("/:id", ensureCorrectUser, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, updateUserSchema);
     if (!validator.valid) {
@@ -95,7 +95,7 @@ router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const user = await User.updateUser(req.params.username, req.body);
+    const user = await User.updateUser(+req.params.id, req.body);
     return res.json({ user });
   } catch (err) {
     return next(err);
@@ -108,10 +108,10 @@ router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete("/:username", ensureCorrectUser, async function (req, res, next) {
+router.delete("/:id", ensureCorrectUser, async function (req, res, next) {
   try {
-    await User.removeUser(req.params.username);
-    return res.json({ deleted: req.params.username });
+    await User.removeUser(req.params.id);
+    return res.json({ deleted: req.params.id });
   } catch (err) {
     return next(err);
   }

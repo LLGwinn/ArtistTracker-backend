@@ -4,7 +4,6 @@
 
 const express = require("express");
 const { ensureAdmin } = require("../middleware/auth");
-const { BadRequestError } = require("../errors");
 const Artist = require("../models/Artist");
 
 const router = express.Router();

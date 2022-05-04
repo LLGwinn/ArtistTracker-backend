@@ -16,7 +16,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 class User {
 
   /** Authenticate user with username, password.
-   *  Returns { username, firstName, email, city, distancePref, isAdmin }
+   *  Returns { id, username, firstName, email, city, distancePref, isAdmin }
    *
    *  Throws UnauthorizedError is user not found or wrong password.
    **/
@@ -24,7 +24,8 @@ class User {
   static async authenticate(username, password) {
     // look for user in database
     const result = await db.query(
-          `SELECT username,
+          `SELECT id, 
+                  username,
                   password,
                   fname AS "firstName",
                   email,
@@ -50,8 +51,8 @@ class User {
     throw new UnauthorizedError("Invalid username/password");
   }
 
-  /** Register user with data.
-   *  Returns { username, firstName, email, city, distancePref, isAdmin }
+  /** Register new user with given data.
+   *  Returns { id, username, firstName, email, city, distancePref, isAdmin }
    *
    *  Throws BadRequestError on duplicates.
    **/
@@ -82,7 +83,7 @@ class User {
             distance_pref,
             is_admin)
            VALUES ($1, $2, $3, $4, $5, $6, $7)
-           RETURNING username, fname AS "firstName", email, base_city AS "city", 
+           RETURNING id, username, fname AS "firstName", email, base_city AS "city", 
                      distance_pref AS "distancePref", is_admin AS "isAdmin"`,
         [
           username,
@@ -107,7 +108,8 @@ class User {
 
   static async findAllUsers() {
     const result = await db.query(
-          `SELECT username,
+          `SELECT id,
+                  username,
                   fname AS "firstName",
                   email,
                   base_city AS "city",
@@ -120,7 +122,7 @@ class User {
     return result.rows;
   }
 
-  /** Given a username, return data about user.
+  /** Given a user id, return data about user.
    *
    * Returns { username, firstName, artists, events }
    *   where artists is { id, artist_name }
@@ -130,23 +132,26 @@ class User {
    * Throws NotFoundError if user not found.
    **/
 
-  static async getUser(username) {
+  static async getUser(id) {
     const userRes = await db.query(
           `SELECT username,
-                  fname AS "firstName"
+                  fname AS "firstName",
+                  email,
+                  base_city AS "city",
+                  distance_pref AS "distancePref"
            FROM users
-           WHERE username = $1`,
-        [username],
+           WHERE id = $1`,
+        [id],
     );
 
     const user = userRes.rows[0];
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user with id ${id}`);
 
     const userArtistsRes = await db.query(
           `SELECT ua.artist_id
            FROM users_artists ua
-           WHERE ua.username = $1`, [username]);
+           WHERE ua.user_id = $1`, [id]);
 
     user.artists = userArtistsRes.rows.map(a => a.artist_id);
     return user;
@@ -158,7 +163,7 @@ class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { firstName, password, email, city, distancePref }
+   *   { username, firstName, password, email, city, distancePref }
    *
    * Returns { username, firstName, email, city, distancePref }
    *
@@ -166,7 +171,7 @@ class User {
    *
    */
 
-  static async updateUser(username, data) {
+  static async updateUser(id, data) {
     if (data.password) {
       data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
     }
@@ -176,24 +181,24 @@ class User {
         {
           firstName: "fname",
           city: "base_city",
-          distancePref: "distance_pref",
-          isAdmin: "is_admin"
+          distancePref: "distance_pref"
         });
-    const usernameVarIdx = "$" + (values.length + 1);
+    const userIdVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users 
                       SET ${setCols} 
-                      WHERE username = ${usernameVarIdx} 
-                      RETURNING username,
+                      WHERE id = ${userIdVarIdx} 
+                      RETURNING id,
+                                username,
                                 fname AS "firstName",
                                 email,
                                 base_city AS "city",
                                 distance_pref AS "distance_pref",
                                 is_admin AS "isAdmin"`;
-    const result = await db.query(querySql, [...values, username]);
+    const result = await db.query(querySql, [...values, id]);
     const user = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user with id ${id}`);
 
     delete user.password;
     return user;
@@ -201,17 +206,17 @@ class User {
 
   /** Delete given user from database; returns undefined. */
 
-  static async removeUser(username) {
+  static async removeUser(id) {
     let result = await db.query(
           `DELETE
            FROM users
-           WHERE username = $1
+           WHERE id = $1
            RETURNING username`,
-        [username],
+        [id],
     );
     const user = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user with id ${id}`);
   }
 
   /** Apply for job: update db, returns undefined.

@@ -4,7 +4,8 @@ CREATE DATABASE artist_tracker;
 \connect artist_tracker
 
 CREATE TABLE users (
-  username VARCHAR(25) PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(25) UNIQUE NOT NULL,
   password TEXT NOT NULL,
   fname TEXT NOT NULL,
   email TEXT NOT NULL
@@ -25,17 +26,17 @@ CREATE TABLE events (
 );
 
 CREATE TABLE users_artists (
-  username VARCHAR(25)
+  user_id INTEGER
     REFERENCES users ON DELETE CASCADE,
   artist_id TEXT
     REFERENCES artists ON DELETE CASCADE,
-  PRIMARY KEY (username, artist_id)
+  PRIMARY KEY (user_id, artist_id)
 );
 
 CREATE TABLE users_events (
-  username VARCHAR(25)
+  user_id INTEGER
     REFERENCES users ON DELETE CASCADE,
   event_id TEXT
     REFERENCES events ON DELETE CASCADE,
-  PRIMARY KEY (username, event_id)
+  PRIMARY KEY (user_id, event_id)
 );

@@ -1,26 +1,37 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import AuthContext from './authContext';
 
-function Navbar() {
+function NavbarComp( {logout} ) {
+    const {currUser} = useContext(AuthContext);
+
+    function handleLogout(evt) {
+        evt.preventDefault();
+        logout();
+    }
 
     return (
-        <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="/">Artist Tracker</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div className="navbar-nav">
-                        <a className="nav-link active" aria-current="page" href="/">Home</a>
-                        <a className="nav-link" href="/">Link 1</a>
-                        <a className="nav-link" href="/">Link 2</a>
-                    </div>
-                </div>
-            </div>
-            </nav>
-        </div>
+        <>
+            <Navbar bg="light" variant="light">
+                <Container>
+                    <Navbar.Brand href="/">Artist Tracker</Navbar.Brand>
+                    <Nav className="me-auto">
+                        <Nav.Link href="/">Home</Nav.Link>
+                        {currUser 
+                            ? <Nav.Link href={`profile/${currUser.id}`}>{currUser.username}</Nav.Link>
+                            : <Nav.Link href='/login'>Log In</Nav.Link>
+                        }
+                        {currUser 
+                            ? <Nav.Link onClick={handleLogout}>Log out</Nav.Link>
+                            : <Nav.Link href='/signup'>Sign up</Nav.Link>
+                        }
+                    </Nav>
+                </Container>
+            </Navbar>
+        </>
     )
 }
 
-export default Navbar
+export default NavbarComp;

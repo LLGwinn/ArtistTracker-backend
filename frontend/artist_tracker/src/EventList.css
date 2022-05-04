@@ -1,0 +1,12 @@
+.EventList img {
+    float: left;
+}
+
+
+.EventList-title {
+    justify-content: center;
+}
+
+.EventList table {
+    color: white;
+}
