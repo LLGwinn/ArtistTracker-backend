@@ -1,6 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
-import { Navigate } from 'react-router-dom';
 import ArtistTrackerApi from './api';
 import AuthContext from './authContext';
 import './Home.css';

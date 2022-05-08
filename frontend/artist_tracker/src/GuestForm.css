@@ -2,3 +2,12 @@
   width: 50%;
   margin: auto;
 }
+
+.autocompleteContainer {
+  text-align: left;
+  background-color: lightgrey;
+  color: black;
+  width: 30%;
+  margin:auto;
+  cursor: pointer;
+}

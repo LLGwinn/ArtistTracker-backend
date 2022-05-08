@@ -19,18 +19,28 @@ class ApiCalls {
         if (!TICKETMASTER_API_KEY) {
             throw new Error('TICKETMASTER API KEY NOT FOUND');
         }
-        // get artist info based on name
+        // get artists matching name
         const artistRes = await axios.get(
            `${baseURL}/discovery/v2/attractions.json?keyword=${name}&apikey=${TICKETMASTER_API_KEY}`);
+        console.log('artistRes.data', artistRes.data)
         // array of artists based on keyword
-        const artists = artistRes.data._embedded.attractions;
+        const artists = artistRes.data._embedded ? artistRes.data._embedded.attractions : [];
+        console.log('artists in API (.attractions)', artists);
+
+        let homepage;
+        if (artists.length && artists.externalLinks) {
+            if (artists.externalLinks.homepage) {
+                homepage = artists.externalLinks.homepage[0];
+            }
+        } else {homepage = ""};
         
         const allArtists = artists.map(a => {
             return {
                 id: a.id,
                 name: a.name,
-                url: a.externalLinks.homepage[0].url,
-                image: a.images[0].url || null
+                homepage,
+                image: a.images[0].url ? a.images[0].url : 'no images to show',
+                ticketsURL: a.url
             }
         })
     
@@ -46,33 +56,54 @@ class ApiCalls {
      *  
      */
 
-    static async getEvents(artistId, city, radius) {
+    static async getEvents(artistId, geohash, radius) {
         if (!TICKETMASTER_API_KEY) {
             throw new Error('TICKETMASTER API KEY NOT FOUND');
         }
-
         const eventsRes = await axios.get(
-            `${baseURL}/discovery/v2/events.json?attractionId=${artistId}&radius=${radius}&unit=miles&city=${city}&apikey=${TICKETMASTER_API_KEY}`);
-        
-            if(eventsRes.data._embedded) {
-                const events = eventsRes.data._embedded.events;
-                console.log('EVENTS', events)
-                const allEvents = events.map(e => {
-                    return {
-                        id: e.id,
-                        name: e.name,
-                        url: e.url,
-                        datetime: e.dates.start.dateTime,
-                        venue: e._embedded.venues[0].name,
-                        venueCity: e._embedded.venues[0].city.name,
-                        venueState: e._embedded.venues[0].state.name,
-                        artist: e._embedded.attractions[0].id
-                    }
-                })
-                return allEvents;
-            } else {
-                return{};
-            }
+            `${baseURL}/discovery/v2/events.json?attractionId=${artistId}&radius=${radius}&unit=miles&geoPoint=${geohash}&apikey=${TICKETMASTER_API_KEY}`);
+        console.log('EVENTSRES:', eventsRes)
+        if(eventsRes.data._embedded) {
+            const events = eventsRes.data._embedded.events;
+            console.log('EVENTS', events)
+            const allEvents = events.map(e => {
+                return {
+                    id: e.id,
+                    name: e.name,
+                    url: e.url,
+                    datetime: e.dates.start.dateTime,
+                    venue: e._embedded.venues[0].name,
+                    venueCity: e._embedded.venues[0].city.name,
+                    venueState: e._embedded.venues[0].state.name,
+                    artist: e._embedded.attractions[0].id
+                }
+            })
+            return allEvents;
+        } else {
+            return{};
+        }
+    }
+
+    /** Returns array of city objects to use in autocomplete. */
+
+    static async getCities(str) {
+        const citiesAPI = '853b9f4f9cmsh8a4230f74741b00p1a6d06jsn97aeefa48514';
+        const url = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
+        const headers = { 'x-rapidapi-key':citiesAPI };
+        const res = await axios.get(
+            `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${citiesAPI}&countryIds=US`,
+            {headers}
+        )
+        return res.data.data;
+    }
+
+    /** Get city's geohash. */
+
+    static async getGeohash(lat, long) {
+        const res = await axios.get(
+            `http://geohash.world/v1/encode/${lat},${long}?pre=9`
+        );
+        return res.data.geohash;
     }
 }
 

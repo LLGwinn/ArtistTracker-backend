@@ -41,9 +41,9 @@ class ArtistTrackerApi {
 
   /** Get list of events for an artist */
   
-  static async getEventsForArtist(artistId, city, radius) {
+  static async getEventsForArtist(artistId, lat, long, radius) {
     try {
-      const queryData = {id: artistId, city, radius}
+      const queryData = {id: artistId, lat, long, radius}
       const res = await this.request(`search/events`, queryData);
       console.log('RES');
       return res;
@@ -105,6 +105,29 @@ class ArtistTrackerApi {
         return {token: res.token, newUser};
       } catch(err) {
         console.log(err)
+      }
+    }
+
+    /** Returns an array of city objects to use in autocomplete. */
+
+    static async getCitiesForAutocomplete(str) {
+      try {
+        const res = await this.request('search/cities', {city:str});
+        return res;
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    /** Returns an array of artist objects to use in autocomplete. */
+
+    static async getArtistsForAutocomplete(str) {
+      try {
+        const res = await this.request('search/artists', {artist:str});
+        console.log('res in api', res)
+        return res;
+      } catch(err) {
+        console.log(err);
       }
     }
 

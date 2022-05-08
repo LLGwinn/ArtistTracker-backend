@@ -8,42 +8,39 @@ import "./EventList.css";
  *  {data} = {artistId, city, distance}
  */
 
-function EventList( {data} ) {
-    const [artist, setArtist] = useState({id:"", name:"", url:"", image:""});
+function EventList( {artistInfo, cityInfo, radius} ) {
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
-        // Get details for the artist
-        async function addArtistToState(name) {
-            const res = await ArtistTrackerApi.getArtistByName(name);
-            setArtist(res.artists[0])
-        }
-        addArtistToState(data.artistName);
-    }, [])
-
-    useEffect(() => {
         // Get events for the artist
-        async function setEventsInState(artistId, city, distance) {
+        const cityLat = cityInfo.latitude;
+        const cityLong = cityInfo.longitude;
+
+        async function getArtistEvents(artistId, cityLat, cityLong, radius) {
             const res = await ArtistTrackerApi.getEventsForArtist(
-                artistId, city, distance)
-            setEvents(res.events)
+                artistId, cityLat, cityLong, radius)
+            if (res.events) setEvents(res.events);
         }
-        if (artist.id !== '') setEventsInState(artist.id, data.city, data.distance)
-    }, [artist])
+
+        if (artistInfo.id !== '') getArtistEvents(artistInfo.id, cityLat, cityLong, radius);
+        console.log('EVENTS', events)
+    }, [])
 
     return(
         <>
             <div className="EventList container p-0 border border-light">
                 <div className="row align-items-center">
                     <div className="col-2">
-                        <img src={artist.image} className='img-fluid'/>
+                        <img src={artistInfo.image} alt='artist' className='img-fluid'/>
                     </div>
                     <div className='EventList-title col-10'>
                         <div className='row'>
-                            <p className="fs-2">{artist.name}</p>
+                            <p className="fs-2">{artistInfo.name}</p>
                         </div>
                     </div>
                     <div className='row'>
+                        {(events.length)
+                        ?
                         <table className='table'>
                             <thead>
                                 <tr>
@@ -56,16 +53,20 @@ function EventList( {data} ) {
                             </thead>
                             <tbody>
                                 {events.map(e => {
-                                   return (<tr key={e.id}>
+                                        return (<tr key={e.id}>
                                             <td>{new Date(e.datetime).toLocaleDateString()}</td>
                                             <td>{e.venue}</td>
                                             <td>{e.venueCity}</td>
                                             <td>{e.venueState}</td>
                                             <td><Button size="sm">Save</Button></td>
                                           </tr>)
-                                })}                                
+                                    })
+                                }     
                             </tbody>
                         </table>
+                        :
+                        <div className='p-5'>NO EVENTS AT THIS TIME</div>
+                    }
                     </div>
                     
                 </div>
