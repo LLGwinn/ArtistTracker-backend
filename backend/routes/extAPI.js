@@ -1,13 +1,13 @@
 "use strict";
-const axios = require('axios');
-const TICKETMASTER_API_KEY = require('../config');
-const baseURL = 'https://app.ticketmaster.com';
+// const axios = require('axios');
+// const TICKETMASTER_API_KEY = require('../config');
+// const baseURL = 'https://app.ticketmaster.com';
 
 /** Routes for external API calls. */
 
 const express = require("express");
 const ApiCalls = require("../models/ApiCalls");
-const { json } = require('express');
+//const { json } = require('express');
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get("/artists", async function (req, res, next) {
       const artistName = req.query.artist;
 
       const artist = await ApiCalls.getArtistsByKeyword(artistName);
-      console.log('artist res', artist)
+
       return res.json({artist});
     } catch (err) {
       return next(err);
@@ -42,6 +42,7 @@ router.get("/events", async function (req, res, next) {
 
     const geohash = await ApiCalls.getGeohash(lat, long);
     const events = await ApiCalls.getEvents(id, geohash, radius);
+
     return res.json({events})
   } catch(err) {
     return next(err);

@@ -4,6 +4,7 @@ const axios = require ('axios');
 
 const baseURL = 'https://app.ticketmaster.com';
 const {TICKETMASTER_API_KEY} = require ('../config.js');
+const {GEOCITIES_API_KEY} = require ('../config.js');
 
 class ApiCalls {
 
@@ -62,10 +63,9 @@ class ApiCalls {
         }
         const eventsRes = await axios.get(
             `${baseURL}/discovery/v2/events.json?attractionId=${artistId}&radius=${radius}&unit=miles&geoPoint=${geohash}&apikey=${TICKETMASTER_API_KEY}`);
-        console.log('EVENTSRES:', eventsRes)
+
         if(eventsRes.data._embedded) {
             const events = eventsRes.data._embedded.events;
-            console.log('EVENTS', events)
             const allEvents = events.map(e => {
                 return {
                     id: e.id,
@@ -87,11 +87,10 @@ class ApiCalls {
     /** Returns array of city objects to use in autocomplete. */
 
     static async getCities(str) {
-        const citiesAPI = '853b9f4f9cmsh8a4230f74741b00p1a6d06jsn97aeefa48514';
         const url = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
-        const headers = { 'x-rapidapi-key':citiesAPI };
+        const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
         const res = await axios.get(
-            `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${citiesAPI}&countryIds=US`,
+            `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
             {headers}
         )
         return res.data.data;

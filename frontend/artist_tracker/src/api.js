@@ -13,7 +13,7 @@ class ArtistTrackerApi {
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
+    //console.debug("API Call:", endpoint, data, method);
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${ArtistTrackerApi.token}` };
     const params = (method === "get") ? data : {};
@@ -45,7 +45,7 @@ class ArtistTrackerApi {
     try {
       const queryData = {id: artistId, lat, long, radius}
       const res = await this.request(`search/events`, queryData);
-      console.log('RES');
+
       return res;
     } catch(err) {
       console.log(err)
@@ -124,7 +124,7 @@ class ArtistTrackerApi {
     static async getArtistsForAutocomplete(str) {
       try {
         const res = await this.request('search/artists', {artist:str});
-        console.log('res in api', res)
+
         return res;
       } catch(err) {
         console.log(err);

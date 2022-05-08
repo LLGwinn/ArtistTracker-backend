@@ -39,7 +39,6 @@ function GuestForm() {
     async function fetchArtists(str) {
         try {
             const res = await ArtistTrackerApi.getArtistsForAutocomplete(str);
-            console.log('fetchArtists', res)
             setAutocompleteArtists(res.artist);
         } catch(err) {
             console.log(err);
@@ -67,7 +66,6 @@ function GuestForm() {
     const setCitySelection = (citySelection) => {
         setCitySearch(`${citySelection.name}, ${citySelection.region}`);
         setSelectedCity(citySelection);
-        console.log('citySelection', citySelection)
         setCityOptionsDisplay(false);
     }
 

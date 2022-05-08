@@ -23,7 +23,6 @@ function EventList( {artistInfo, cityInfo, radius} ) {
         }
 
         if (artistInfo.id !== '') getArtistEvents(artistInfo.id, cityLat, cityLong, radius);
-        console.log('EVENTS', events)
     }, [])
 
     return(
