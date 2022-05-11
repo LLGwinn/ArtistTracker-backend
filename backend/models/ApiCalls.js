@@ -3,8 +3,7 @@
 const axios = require ('axios');
 
 const baseURL = 'https://app.ticketmaster.com';
-const {TICKETMASTER_API_KEY} = require ('../config.js');
-const {GEOCITIES_API_KEY} = require ('../config.js');
+const {TICKETMASTER_API_KEY, GEOCITIES_API_KEY} = require ('../config.js'); 
 
 class ApiCalls {
 
@@ -23,10 +22,8 @@ class ApiCalls {
         // get artists matching name
         const artistRes = await axios.get(
            `${baseURL}/discovery/v2/attractions.json?keyword=${name}&apikey=${TICKETMASTER_API_KEY}`);
-        console.log('artistRes.data', artistRes.data)
         // array of artists based on keyword
         const artists = artistRes.data._embedded ? artistRes.data._embedded.attractions : [];
-        console.log('artists in API (.attractions)', artists);
 
         let homepage;
         if (artists.length && artists.externalLinks) {
@@ -46,6 +43,39 @@ class ApiCalls {
         })
     
         return allArtists;
+    }
+
+    /**
+     *  
+     * Returns details for artist with given id.
+     *  
+     */
+
+    static async getArtistById(id) {
+        if (!TICKETMASTER_API_KEY) {
+            throw new Error('TICKETMASTER API KEY NOT FOUND');
+        }
+        // get artist matching id
+        const artistRes = await axios.get(
+           `${baseURL}/discovery/v2/attractions/${id}.json?apikey=${TICKETMASTER_API_KEY}`);
+        const artist = artistRes.data ? artistRes.data : [];
+
+        let homepage;
+        if (artist.length && artist.externalLinks) {
+            if (artist.externalLinks.homepage) {
+                homepage = artist.externalLinks.homepage[0];
+            }
+        } else {homepage = ""};
+        
+        const foundArtist = {
+                id: artist.id,
+                name: artist.name,
+                homepage,
+                image: artist.images[0].url ? artist.images[0].url : 'no images to show',
+                ticketsURL: artist.url
+        }
+    
+        return foundArtist;
     }
 
     /**

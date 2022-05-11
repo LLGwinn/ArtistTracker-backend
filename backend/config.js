@@ -12,6 +12,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "secret-capstone2";
 const PORT = +process.env.PORT || 3001; 
 
 const TICKETMASTER_API_KEY = process.env.TICKETMASTER_API_KEY;
+const GEOCITIES_API_KEY = process.env.GEOCITIES_API_KEY;
 
 // Use dev database, testing database, or via env var, production database
 function getDatabaseUri() {
@@ -31,6 +32,7 @@ module.exports = {
   SECRET_KEY,
   PORT,
   TICKETMASTER_API_KEY,
+  GEOCITIES_API_KEY,
   BCRYPT_WORK_FACTOR,
   getDatabaseUri,
 };

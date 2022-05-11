@@ -1,4 +1,4 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AuthContext from './authContext';
 import Form from 'react-bootstrap/Form';
@@ -8,19 +8,28 @@ import Button from 'react-bootstrap/Button';
 import UnauthorizedMessage from './UnauthorizedMessage';
 import ArtistTrackerApi from './api';
 import './Profile.css';
+import ArtistItem from './ArtistItem';
 
 
 function Profile() {  
     const {id} = useParams();
     const {currUser, setCurrUser, token} = useContext(AuthContext);
+    const [artists, setArtists] = useState([]);
     const [formData, setFormData] = useState(
-        {username: currUser.username, firstName: currUser.firstName, 
-         email: currUser.email, city: currUser.city, 
-         distancePref: currUser.distance, password: ''}
+                {username: currUser.username, firstName: currUser.firstName, 
+                email: currUser.email, city: currUser.city, 
+                distancePref: currUser.distance, password: ''}
     );
     const navigate = useNavigate();
 
-    if (!token) return <UnauthorizedMessage />;
+    useEffect(() => {
+        async function getTheArtists() {
+            const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
+            setArtists(res.artists);
+        }
+        getTheArtists();
+
+    }, [])
 
     function handleChange(evt) {
         const {name, value} = evt.target;
@@ -49,6 +58,9 @@ function Profile() {
         }
       }
 
+    
+    if (!token) return <UnauthorizedMessage />;
+
     return (
         <div className="container-fluid">
             <div className="row py-2">
@@ -58,8 +70,8 @@ function Profile() {
                 <Form className="Profile row mb-3 py-4">
                 <div className="col-5 p-4 border border-primary">
                     <Form.Group as={Row} className="mb-3" controlId="username">
-                        <Form.Label column sm={3}>Username</Form.Label>
-                        <Col sm={5}>
+                        <Form.Label column sm={4}>Username</Form.Label>
+                        <Col sm={8}>
                             <Form.Control type="text"
                                         name="username" 
                                         value={formData.username}
@@ -67,8 +79,8 @@ function Profile() {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3" controlId="password">
-                        <Form.Label column sm={3}>Password</Form.Label>
-                        <Col sm={5}>
+                        <Form.Label column sm={4}>Password</Form.Label>
+                        <Col sm={8}>
                             <Form.Control type="password"
                                         name="password" 
                                         value={formData.password}
@@ -76,8 +88,8 @@ function Profile() {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3" controlId="firstName">
-                        <Form.Label column sm={3}>First Name</Form.Label>
-                        <Col sm={5}>
+                        <Form.Label column sm={4}>First Name</Form.Label>
+                        <Col sm={8}>
                             <Form.Control type="text"
                                         name="firstName" 
                                         value={formData.firstName}
@@ -85,8 +97,8 @@ function Profile() {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3" controlId="email">
-                        <Form.Label column sm={3}>Email</Form.Label>
-                        <Col sm={5}>
+                        <Form.Label column sm={4}>Email</Form.Label>
+                        <Col sm={8}>
                             <Form.Control type="email"
                                         name="email" 
                                         value={formData.email}
@@ -94,8 +106,8 @@ function Profile() {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3" controlId="city">
-                        <Form.Label column sm={3}>City</Form.Label>
-                        <Col sm={5}>
+                        <Form.Label column sm={4}>City</Form.Label>
+                        <Col sm={8}>
                             <Form.Control type="text"
                                         name="city" 
                                         value={formData.city}
@@ -103,8 +115,8 @@ function Profile() {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3 align-items-center" controlId="distancePref">
-                        <Form.Label column sm={3}>Event search radius</Form.Label>
-                        <Col sm={5}>
+                        <Form.Label column sm={4}>Event search radius</Form.Label>
+                        <Col sm={8}>
                             <Form.Control type="number"
                                         name="distancePref" 
                                         value={formData.distancePref}
@@ -113,7 +125,12 @@ function Profile() {
                     </Form.Group>
                 </div>
                 <div className="col-5 ms-5 p-4 justify-content-center border border-primary">
-                        Artist list here.
+                        <ul>
+                        {(artists.length)
+                        ? artists.map(a => <li key={a.id}><ArtistItem artistId={a.id} /></li>)
+                        : <p>NO ARTISTS SAVED</p>
+                        }
+                        </ul>
                 </div>
                 </Form>
                 <Button type="submit" onChange={handleChange} onClick={handleUpdate}>

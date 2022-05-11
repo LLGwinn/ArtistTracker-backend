@@ -1,0 +1,13 @@
+.ArtistItem {
+    font-size: 1.75rem;
+    text-align: left;
+    border: solid white 1px;
+    border-radius: 4px;
+}
+
+.ArtistItem img {
+    width: 100px;
+    border-radius: 4px;
+    padding: 2px;
+    margin-right: 20px;
+}

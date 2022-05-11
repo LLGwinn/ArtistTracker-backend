@@ -8,20 +8,54 @@ const {
 
   class Artist {
 
-    /** Adds a new artist to db 
+    /** Adds a new artist:
+     *  If already in users_artist for this user, show alert and return.
+     *  If not, add artist to artist table if not already there, 
+     *  then add to users_artists table.
      *  
-     *  Returns { id: id, artist_name: name }
+     *  Receives {data: artistId, artistName, userId}
+     *  Returns { user_id, artist_id }
     */
 
-    static async addArtist( {id, name} ) {
-        const newArtistRes = await db.query(
-            `INSERT INTO artists (id, artist_name)
+    static async addArtist( data ) {
+        // check users_artists for duplicate
+        const duplicateUsersArtistsCheck = await db.query(
+            `SELECT *
+            FROM users_artists
+            WHERE user_id = $1 AND artist_id = $2`,
+            [data.userId, data.artistId]
+        )
+        if (duplicateUsersArtistsCheck.rows[0]) {
+            alert(`Artist is already saved for this user.`);
+            return;
+        }
+
+        // look for duplicate artist id in artists table
+        const duplicateArtistCheck = await db.query(
+            `SELECT id
+             FROM artists
+             WHERE id = $1`,
+             [data.artistId],
+        );
+        // if artist is not already in artists table, add it
+        if (!duplicateArtistCheck.rows[0]) {
+            await db.query(
+                `INSERT INTO artists (id, artist_name)
+                 VALUES ($1, $2)
+                 RETURNING id, artist_name AS "name"`,
+                 [data.artistId, data.artistName]    
+            );
+        }
+
+        // add item to users_artists table
+        const userArtistRes = await db.query(
+            `INSERT INTO users_artists (user_id, artist_id)
              VALUES ($1, $2)
-             RETURNING id, artist_name AS "name"`,
-             [id, name]    
+             RETURNING user_id, artist_id`,
+             [data.userId, data.artistId]
         );
 
-        return newArtistRes.rows[0];
+        return userArtistRes.rows[0];
     }
 
     /** Given an artist id, return artist name.
@@ -63,6 +97,6 @@ const {
 
         return artist;
     }
-  }
+}
 
   module.exports = Artist;

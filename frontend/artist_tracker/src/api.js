@@ -32,7 +32,18 @@ class ArtistTrackerApi {
 
   static async getArtistByName(artistName) {
     try {
-      const res = await this.request(`search/artists`, {artistName});
+      const res = await this.request(`search/artistsByName`, {artistName});
+      return res;
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  /** Get details on an artist by id. */
+
+  static async getArtistById(artistId) {
+    try {
+      const res = await this.request(`search/artistById`, {artistId});
       return res;
     } catch(err) {
       console.log(err)
@@ -49,6 +60,17 @@ class ArtistTrackerApi {
       return res;
     } catch(err) {
       console.log(err)
+    }
+  }
+
+  /** Add an artist to a user's favorites. */
+  static async addArtistToUser(artistId, artistName, userId) {
+    try {
+      const res = await this.request(`artists/add`, {artistId, artistName, userId}, 'post');
+
+      return res;
+    } catch(err) {
+      console.log(err);
     }
   }
 
@@ -71,8 +93,7 @@ class ArtistTrackerApi {
         ArtistTrackerApi.token = token;
         const {id, username, password, firstName, email, city, distancePref} = user;
         const updateData = {username, password, firstName, email, city, distancePref}
-        const res = await this.request(`users/${id}`, 
-                    updateData, 'patch');
+        const res = await this.request(`users/${id}`, updateData, 'patch');
         return res.user;
       } catch(err) {
         console.log(err)
@@ -123,7 +144,7 @@ class ArtistTrackerApi {
 
     static async getArtistsForAutocomplete(str) {
       try {
-        const res = await this.request('search/artists', {artist:str});
+        const res = await this.request('search/artistsByName', {artist: str});
 
         return res;
       } catch(err) {
@@ -131,18 +152,17 @@ class ArtistTrackerApi {
       }
     }
 
-    // /** Apply to job */
+    /** Returns array of user's favorite artists. */
 
-    // static async applyToJob(username, id, token) {
-    //   try {
-    //     JoblyApi.token = token;
-    //     const res = await this.request(`users/${username}/jobs/${id}`, {}, 'post');
-    //     console.log(res)
-    //     return res;
-    //   } catch(err) {
-    //     console.log(err)
-    //   }
-    // }
+    static async getArtistsForUser(userId) {
+      try {
+        const res = await this.request(`users/${userId}/artists`);
+
+        return res;
+      } catch(err) {
+        console.log(err);
+      }
+    }
 
 }
 

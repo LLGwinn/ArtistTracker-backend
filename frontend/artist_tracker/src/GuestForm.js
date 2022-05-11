@@ -147,6 +147,7 @@ function GuestForm() {
         :
         <>
             <EventList artistInfo={selectedArtist} cityInfo={selectedCity} radius={radius} />
+            <Button href="/" className="mt-2">Find another artist</Button>
         </>
     )
 }

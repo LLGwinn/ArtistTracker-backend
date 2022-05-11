@@ -1,23 +1,19 @@
 "use strict";
-// const axios = require('axios');
-// const TICKETMASTER_API_KEY = require('../config');
-// const baseURL = 'https://app.ticketmaster.com';
 
 /** Routes for external API calls. */
 
 const express = require("express");
 const ApiCalls = require("../models/ApiCalls");
-//const { json } = require('express');
 
 const router = express.Router();
 
 /**
- *  GET /search/artists [searchTerm] => {artists: [...]}
+ *  GET /search/artistsbyName [searchTerm] => {artists: [...]}
  *  
- *  Returns array of artists.
+ *  Returns array of artists with name matching searchTerm.
  */
 
-router.get("/artists", async function (req, res, next) {
+router.get("/artistsByName", async function (req, res, next) {
     try {
       const artistName = req.query.artist;
 
@@ -27,6 +23,23 @@ router.get("/artists", async function (req, res, next) {
     } catch (err) {
       return next(err);
     }
+});
+
+/**
+ *  GET /search/artistsbyId [id] => {artists: [...]}
+ *  
+ *  Returns details for artist with given id.
+ */
+
+ router.get("/artistById", async function (req, res, next) {
+  try {
+    const artistId = req.query.artistId;
+    const artist = await ApiCalls.getArtistById(artistId);
+
+    return res.json({artist});
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /**

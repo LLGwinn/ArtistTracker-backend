@@ -1,28 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ArtistTrackerApi from './api';
 import Button from 'react-bootstrap/Button';
 import "./EventList.css";
+import AuthContext from './authContext';
 
-/** Returns a list of events in table format for an artist.
+/** Renders a list of events in table format for an artist.
  * 
- *  {data} = {artistId, city, distance}
+ *  If user is logged in, shows button to save an event to their account.
  */
 
 function EventList( {artistInfo, cityInfo, radius} ) {
     const [events, setEvents] = useState([]);
+    const {currUser} = useContext(AuthContext);
 
     useEffect(() => {
-        // Get events for the artist
-        const cityLat = cityInfo.latitude;
-        const cityLong = cityInfo.longitude;
-
+        // Get events for the artist on page render
         async function getArtistEvents(artistId, cityLat, cityLong, radius) {
             const res = await ArtistTrackerApi.getEventsForArtist(
                 artistId, cityLat, cityLong, radius)
             if (res.events) setEvents(res.events);
         }
 
-        if (artistInfo.id !== '') getArtistEvents(artistInfo.id, cityLat, cityLong, radius);
+        if (artistInfo.id !== '') {
+            getArtistEvents(artistInfo.id, cityInfo.latitude, cityInfo.longitude, radius);
+        }
     }, [])
 
     return(
@@ -57,7 +58,9 @@ function EventList( {artistInfo, cityInfo, radius} ) {
                                             <td>{e.venue}</td>
                                             <td>{e.venueCity}</td>
                                             <td>{e.venueState}</td>
+                                            {currUser &&
                                             <td><Button size="sm">Save</Button></td>
+                                            }
                                           </tr>)
                                     })
                                 }     
@@ -66,12 +69,9 @@ function EventList( {artistInfo, cityInfo, radius} ) {
                         :
                         <div className='p-5'>NO EVENTS AT THIS TIME</div>
                     }
-                    </div>
-                    
+                    </div>    
                 </div>
             </div>
-            
-
         </>
     )
 }

@@ -117,6 +117,21 @@ router.delete("/:id", ensureCorrectUser, async function (req, res, next) {
   }
 });
 
+  
+/** GET /users/:id/artists  => {artists: [user_id, artist_id]} 
+ * 
+ *  Gets a list of artists for a given user.
+*/
+
+router.get("/:id/artists", async function (req, res, next) {
+  try {
+    const artists = await User.findUserArtists(req.params.id);
+    return res.json({artists})
+  } catch(err) {
+    return next(err);
+  }
+});
+
 
 /** POST /[username]/jobs/[id]  { state } => { application }
  *

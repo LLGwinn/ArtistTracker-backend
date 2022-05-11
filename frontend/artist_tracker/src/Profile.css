@@ -5,3 +5,7 @@
 .Profile label {
     text-align: right;
 }
+
+.Profile ul {
+    list-style-type: none;
+}
