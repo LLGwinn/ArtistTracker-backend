@@ -17,10 +17,10 @@ function NavbarComp( {logout} ) {
             <Navbar bg="light" variant="light">
                 <Container>
                     <Navbar.Brand href="/">Artist Tracker</Navbar.Brand>
-                    <Nav className="me-auto">
-                        <Nav.Link href="/">Home</Nav.Link>
+                    <Nav className="mr-auto">
+                        <Nav.Link href="/">Home&nbsp;&nbsp;&nbsp;|</Nav.Link>
                         {currUser 
-                            ? <Nav.Link href={`profile/${currUser.id}`}>{currUser.username}</Nav.Link>
+                            ? <Nav.Link href={`profile/${currUser.id}`}>{currUser.username}&nbsp;&nbsp;&nbsp;|</Nav.Link>
                             : <Nav.Link href='/login'>Log In</Nav.Link>
                         }
                         {currUser 

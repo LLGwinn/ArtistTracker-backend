@@ -1,10 +1,10 @@
-.Home-box {
+.Home-right {
     border: solid blue 1px;
     border-radius: 8px;
     padding: 20px;
 }
 
 .Home-eventList {
-    height: 65%;
+    height: 70vh;
     overflow-y: scroll;
 }

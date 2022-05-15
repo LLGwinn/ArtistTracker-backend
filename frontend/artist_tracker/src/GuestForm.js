@@ -25,7 +25,7 @@ function GuestForm() {
                                 debounce(str => fetchCities(str), 1200), []);
 
     const debounceLoadArtists = useCallback(
-        debounce(str => fetchArtists(str), 1000), []);
+        debounce(str => fetchArtists(str), 750), []);
 
     async function fetchCities(str) {
         try {

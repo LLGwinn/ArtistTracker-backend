@@ -4,7 +4,6 @@ import ArtistTrackerApi from './api';
 import Button from 'react-bootstrap/Button';
 import "./EventList.css";
 import userContext from './userContext';
-import { Navigate } from 'react-router-dom';
 
 /** Renders a list of events in table format for an artist.
  * 
@@ -12,7 +11,7 @@ import { Navigate } from 'react-router-dom';
  */
 
 function EventList( {artistDetails, cityInfo, radius} ) {
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState(null);
     const {currUser} = useContext(userContext);
     const navigate = useNavigate();
 
@@ -39,6 +38,8 @@ function EventList( {artistDetails, cityInfo, radius} ) {
             console.log(err);
         }
     }
+
+    if(!events) return <div className="spinner-border text-primary mt-3" role="status"></div>
 
     return(
         <div className="EventList container">

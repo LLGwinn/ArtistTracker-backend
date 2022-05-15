@@ -37,7 +37,7 @@ function HomeUser( {logout} ) {
             <div className="row py-2">
                 <p className="display-5">Hi there, {currUser.firstName}!</p>
             </div>
-            <div className="row mb-3 py-3">
+            <div className="row py-3">
                 <div className="col-10 ">
                     <p className="h3 pb-1 mb-2">Upcoming shows from your favorite artists:</p>
                     <div className='Home-eventList'>
@@ -46,7 +46,7 @@ function HomeUser( {logout} ) {
                             return <EventList key={a.artist.id} artistDetails={a.artist} cityInfo={city} radius={currUser.radius}/>;
                         
                         })
-                        : <p className='mt-5'>Hmm...looks like you haven't saved any artists yet.</p>
+                        : <p className='mt-5'>Looking for your saved artists...</p>
                     }
                     </div>
                 </div>
