@@ -11,7 +11,7 @@ import EventList from './EventList';
 import NotFound from './NotFound';
 import AddArtistForm from './AddArtistForm';
 
-function AppRoutes( {signup, login, update, logout, add, removeArtist}) {
+function AppRoutes( {signup, login, logout, add, removeArtist}) {
     const {currUser} = useContext(userContext);
 
     return (

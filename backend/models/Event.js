@@ -9,9 +9,12 @@ const {
   class Event {
 
     /** Adds a new event:
-     *  If already in users_events for this user, show alert and return.
-     *  If not, add event to events table if not already there, 
-     *  then add to users_events table.
+     *  If already in users_events for this user, return alert message.
+     * 
+     *  If not:
+     *      - add event to events table if not already there. 
+     *      - add to users_events table
+     *      - return alert message.
      *  
     */
 
@@ -24,9 +27,7 @@ const {
             [event.userId, event.event.id]
         )
         if (duplicateUsersEventsCheck.rows[0]) {
-            alert(`Event is already saved for this user.`);
-            return;
-            // or an error
+            return (`Event is already saved for this user.`);
         }
 
         // look for duplicate event id in events table
@@ -65,7 +66,7 @@ const {
                 [event.userId, event.event.id]
         );
 
-        return userEventsRes.rows[0];
+        return (`Added ${event.event.name} to your saved events!`);;
     }
 
     /** Given an event id, return event name.
@@ -75,8 +76,7 @@ const {
 
     static async getEvent(id) {
         const eventRes = await db.query(
-            `SELECT id,
-                    event_name
+            `SELECT id, event_name
             FROM events
             WHERE id = $1`,
             [id],
@@ -91,7 +91,7 @@ const {
 
     /** Remove event with given id from db.
      * 
-     *  Returns undefined
+     *  Returns alert message.
      */
 
     static async removeEvent(id) {
@@ -101,11 +101,10 @@ const {
              RETURNING id`,
              [id]
         )
-        const event = result.rows[0];
 
-        if (!event) throw new NotFoundError(`Cannot remove. No event with id ${id}`);
+        if (!res.rows[0]) throw new NotFoundError(`Cannot remove. No event with id ${id}`);
 
-        return event;
+        return ("Event removed from your saved events.");
     }
   }
 

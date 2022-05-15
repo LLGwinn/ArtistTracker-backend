@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import EventList from './EventList';
 import ArtistTrackerApi from './api';
 import './Home.css';
+import UnauthorizedMessage from './UnauthorizedMessage';
 
 function HomeUser( {logout} ) {
-    const {currUser, usersSavedArtists} = useContext(userContext);
+    const {currUser, token, usersSavedArtists} = useContext(userContext);
     const [city, setCity] = useState({});
     const navigate = useNavigate();
 
@@ -28,6 +29,8 @@ function HomeUser( {logout} ) {
         evt.preventDefault();
         logout();
     }
+
+    if (!token) return <UnauthorizedMessage />
     
     return (
         <div className="container-fluid">

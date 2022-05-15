@@ -118,7 +118,7 @@ router.delete("/:id", ensureCorrectUser, async function (req, res, next) {
 });
 
   
-/** GET /users/:id/artists  => {artists: [...]} 
+/** GET /users/[userId/artists  => {artists: [...]} 
  * 
  *  Gets a list of artists for a given user.
 */
@@ -127,6 +127,21 @@ router.get("/:id/artists", async function (req, res, next) {
   try {
     const artists = await User.findUserArtists(req.params.id);
     return res.json({artists})
+  } catch(err) {
+    return next(err);
+  }
+});
+
+
+/** DELETE /users/[userId]/artists  => {deleted: artist_name from username} 
+ * 
+ *  Removes record from users_artists for given user/artist.
+*/
+
+router.delete("/:id/artists", async function (req, res, next) {
+  try {
+    const deleteMessage = await User.deleteUserArtist(req.params.id, req.body.artistId);
+    return res.json({deleteMessage})
   } catch(err) {
     return next(err);
   }
@@ -146,19 +161,20 @@ router.get("/:id/events", async function (req, res, next) {
   }
 });
 
-/** DELETE /users/[userId]/artists  => {deleted: artist_name from username} 
+/** DELETE /users/[userId]/events  => {deleted: event} 
  * 
- *  Removes record from users_artists for given user/artist.
+ *  Removes record from users_events for given user/event.
 */
 
-router.delete("/:id/artists", async function (req, res, next) {
+router.delete("/:id/events", async function (req, res, next) {
   try {
-    const deleteMessage = await User.deleteUserArtist(req.params.id, req.body.artistId);
+    const deleteMessage = await User.deleteUserEvent(req.params.id, req.body.eventId);
     return res.json({deleteMessage})
   } catch(err) {
     return next(err);
   }
 });
+
 
 
 

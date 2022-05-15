@@ -63,17 +63,6 @@ class ArtistTrackerApi {
     }
   }
 
-  /** Removes artist from users_artists for this user. */
-
-  static async removeArtistFromUser(userId, artistId) {
-    try {
-      const res = await this.request(`users/${userId}/artists`, {artistId}, 'delete')
-      return res;
-    } catch(err) {
-      console.log(err);
-    }
-  }
-
   /***********************
    *    USER ROUTES
    ***********************/
@@ -132,12 +121,54 @@ class ArtistTrackerApi {
       console.log(err)
     }
   }
+
+  /***********************
+   *    USER/ARTIST ROUTES
+   ***********************/
  
   /** Add an artist to the db. */
 
   static async addArtistToUser(artistId, artistName, userId) {
     try {
       const res = await this.request(`artists/add`, {artistId, artistName, userId}, 'post');
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  /** Returns array of user's saved events. */
+
+  static async getArtistsForUser(userId) {
+    try {
+      const res = await this.request(`users/${userId}/artists`);
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  
+  /** Removes artist from users_artists for this user. */
+
+  static async removeArtistFromUser(userId, artistId) {
+    try {
+      const res = await this.request(`users/${userId}/artists`, {artistId}, 'delete')
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  /***********************
+   *    USER/EVENT ROUTES
+   ***********************/
+
+  /** Add an event to the db */
+
+  static async addEventToUser(event, userId) {
+    try {
+      const res = await this.request(`events/add`, {event, userId}, 'post');
       return res;
     } catch(err) {
       console.log(err);
@@ -155,16 +186,17 @@ class ArtistTrackerApi {
     }
   }
 
-    /** Returns array of user's saved events. */
+  /** Removes event from users_events for this user. */
 
-    static async getArtistsForUser(userId) {
-      try {
-        const res = await this.request(`users/${userId}/artists`);
-        return res;
-      } catch(err) {
-        console.log(err);
-      }
+  static async removeEventFromUser(userId, eventId) {
+    try {
+      const res = await this.request(`users/${userId}/events`, {eventId}, 'delete')
+      return res;
+    } catch(err) {
+      console.log(err);
     }
+  }
+
 
   /***********************
    *    CITY ROUTES
@@ -209,16 +241,7 @@ class ArtistTrackerApi {
     }
   }
 
-  /** Add an event to the db */
 
-  static async addEventToUser(event, userId) {
-    try {
-      const res = await this.request(`events/add`, {event, userId}, 'post');
-      return res;
-    } catch(err) {
-      console.log(err);
-    }
-  }
 
  }
 

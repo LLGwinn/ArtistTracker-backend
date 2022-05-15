@@ -17,8 +17,8 @@ const router = express.Router();
 
  router.post("/add", async function (req, res, next) {
     try {
-      const event = await Event.addEvent(req.body);
-      return res.status(201).json( event );
+      const message = await Event.addEvent(req.body);
+      return res.status(201).json( message );
     } catch (err) {
       return next(err);
     }
@@ -48,8 +48,8 @@ router.get("/:id", async function (req, res, next) {
 
 router.delete("/:id", ensureAdmin, async function (req, res, next) {
     try {
-      await Artist.removeEvent(req.params.id);
-      return res.json({ deleted_event: req.params.id });
+      const message = await Artist.removeEvent(req.params.id);
+      return res.json( message )
     } catch (err) {
       return next(err);
     }

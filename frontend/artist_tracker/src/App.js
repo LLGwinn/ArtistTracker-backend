@@ -23,8 +23,8 @@ function App() {
       const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
       if(currUser && res.artists) updateUserArtistsInState(res.artists);
     }
-    findSavedArtists();
-  }, [])
+    if(currUser) findSavedArtists();
+  }, [currUser])
 
   async function login(username, password) {
     try {
@@ -70,7 +70,7 @@ function App() {
     const message = await ArtistTrackerApi.removeArtistFromUser(currUser.id, artistId);
     const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
     setUsersSavedArtists([]);
-    if(currUser && res.artists) updateUserArtistsInState(res.artists);
+    if(res.artists) updateUserArtistsInState(res.artists);
 
     alert(message.deleteMessage);
   }

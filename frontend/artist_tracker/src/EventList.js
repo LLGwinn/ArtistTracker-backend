@@ -32,7 +32,8 @@ function EventList( {artistDetails, cityInfo, radius} ) {
 
     async function saveEvent(e) {
         try {
-            await ArtistTrackerApi.addEventToUser(e, currUser.id);
+            const res = await ArtistTrackerApi.addEventToUser(e, currUser.id);
+            alert(res);
             navigate(`/events/${currUser.id}`);
         } catch(err) {
             console.log(err);

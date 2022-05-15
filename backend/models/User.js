@@ -270,6 +270,20 @@ class User {
     else return ('Deleted artist from user favorites.')
   }
 
+  /** Remove user/event record from users_events */
+
+  static async deleteUserEvent(id, eventId) {
+    const result = await db.query(
+      `DELETE FROM users_events
+        WHERE user_id=$1 AND event_id=$2
+        RETURNING user_id, event_id`,
+        [id, eventId]
+    )
+
+    if (!result.rows[0]) return ('No matching record. No deletion performed.')
+    else return ("Deleted event from your saved events.")
+  }
+
 }
 
 module.exports = User;

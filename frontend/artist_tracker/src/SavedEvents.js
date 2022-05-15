@@ -16,12 +16,19 @@ function SavedEvents() {
         getSavedEvents();
     }, [])
 
-    const remove = (evt) => {
-        console.log('clicked to remove event')
+    const remove = async (e) => {
+        const message = await ArtistTrackerApi.removeEventFromUser(currUser.id, e.id);
+        alert(message.deleteMessage);
+        const res = await ArtistTrackerApi.getEventsForUser(currUser.id);
+        setUserEvents(res.events);
     }
 
     if (!token) return <UnauthorizedMessage />;
-
+    if (!userEvents) return (
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    )
     return (
         <div>
             <p className="display-6 mt-4 mb-5">Your Saved Events</p>
@@ -50,7 +57,7 @@ function SavedEvents() {
                                         <td><Button size="sm" 
                                                 onClick={() => window.open(e.event_url,'_blank')}>Tickets</Button></td>
                                     }
-                                    <td><button className="ArtistItem-button mt-1" onClick={remove}>X</button></td>
+                                    <td><button className="ArtistItem-button mt-1" onClick={() => remove(e)}>X</button></td>
                                 </tr>)
                     })
                     }     
