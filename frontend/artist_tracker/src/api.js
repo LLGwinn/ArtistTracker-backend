@@ -26,7 +26,9 @@ class ArtistTrackerApi {
     }
   }
 
-  // Individual API routes
+  /***********************
+   *    ARTIST ROUTES
+   ***********************/
 
   /** Get details on an artist by name. */
 
@@ -50,6 +52,150 @@ class ArtistTrackerApi {
     }
   }
 
+  /** Returns an array of artist objects to use in autocomplete. */
+
+  static async getArtistsForAutocomplete(str) {
+    try {
+      const res = await this.request('search/artistsByName', {artist: str});
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  /** Removes artist from users_artists for this user. */
+
+  static async removeArtistFromUser(userId, artistId) {
+    try {
+      const res = await this.request(`users/${userId}/artists`, {artistId}, 'delete')
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  /***********************
+   *    USER ROUTES
+   ***********************/
+
+  /** Get details on a user by id. */
+
+  static async getUser(id, token) {
+    try {
+      ArtistTrackerApi.token = token;
+      const res = await this.request(`users/${id}`);
+      return res.user;
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  /** Update user profile. */
+
+  static async updateUser(user, token) {
+    try {
+      ArtistTrackerApi.token = token;
+      const {id, username, password, firstName, email, city, radius} = user;
+      const updateData = {username, password, firstName, email, city, radius}
+      const res = await this.request(`users/${id}`, updateData, 'patch');
+      return res.user;
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  /** Authenticate username/password and return token */
+
+  static async authenticateUser(username, password) {
+    try {
+      const res = await this.request('auth/token', {username, password}, 'post');
+      ArtistTrackerApi.token = res.token;
+      return {token:res.token, user: res.user};
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  /** Register new user and return token */
+
+  static async registerUser(user) {
+    try {
+      const {username, password, firstName, email, city, radius} = user;
+      const res = await this.request('auth/register', 
+                          {username, password, firstName, email, city, radius}, 'post');
+      ArtistTrackerApi.token = res.token;
+      const newUser = {id:res.newUser.id, username:res.newUser.username,
+          firstName: res.newUser.firstName, email: res.newUser.email, 
+          city: res.newUser.city, radius: res.newUser.radius}
+      return {token: res.token, newUser};
+    } catch(err) {
+      console.log(err)
+    }
+  }
+ 
+  /** Add an artist to the db. */
+
+  static async addArtistToUser(artistId, artistName, userId) {
+    try {
+      const res = await this.request(`artists/add`, {artistId, artistName, userId}, 'post');
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+  
+  /** Returns array of user's favorite artists. */
+
+  static async getEventsForUser(userId) {
+    try {
+      const res = await this.request(`users/${userId}/events`);
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+    /** Returns array of user's saved events. */
+
+    static async getArtistsForUser(userId) {
+      try {
+        const res = await this.request(`users/${userId}/artists`);
+        return res;
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+  /***********************
+   *    CITY ROUTES
+   ***********************/
+
+  /** Get details for city with id. */
+
+  static async getCityById(id) {
+    try {
+      const res = await this.request(`search/city/${id}`);
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  /** Returns an array of city objects to use in autocomplete. */
+
+  static async getCitiesForAutocomplete(str) {
+    try {
+      const res = await this.request('search/cities', {city:str});
+      return res;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  /***********************
+   *    EVENT ROUTES
+   ***********************/
+
   /** Get list of events for an artist */
   
   static async getEventsForArtist(artistId, lat, long, radius) {
@@ -63,107 +209,17 @@ class ArtistTrackerApi {
     }
   }
 
-  /** Add an artist to a user's favorites. */
-  static async addArtistToUser(artistId, artistName, userId) {
-    try {
-      const res = await this.request(`artists/add`, {artistId, artistName, userId}, 'post');
+  /** Add an event to the db */
 
+  static async addEventToUser(event, userId) {
+    try {
+      const res = await this.request(`events/add`, {event, userId}, 'post');
       return res;
     } catch(err) {
       console.log(err);
     }
   }
 
-    /** Get details on a user by id. */
-
-    static async getUser(id, token) {
-      try {
-        ArtistTrackerApi.token = token;
-        const res = await this.request(`users/${id}`);
-        return res.user;
-      } catch(err) {
-        console.log(err)
-      }
-    }
-
-    /** Update user profile. */
-
-    static async updateUser(user, token) {
-      try {
-        ArtistTrackerApi.token = token;
-        const {id, username, password, firstName, email, city, distancePref} = user;
-        const updateData = {username, password, firstName, email, city, distancePref}
-        const res = await this.request(`users/${id}`, updateData, 'patch');
-        return res.user;
-      } catch(err) {
-        console.log(err)
-      }
-    }
-
-    /** Authenticate username/password and return token */
-
-    static async authenticateUser(username, password) {
-      try {
-        const res = await this.request('auth/token', {username, password}, 'post');
-        ArtistTrackerApi.token = res.token;
-        return {token:res.token, user: res.user};
-      } catch(err) {
-        console.log(err)
-      }
-    }
-
-    /** Register new user and return token */
-
-    static async registerUser(user) {
-      try {
-        const {username, password, firstName, email, city, distancePref} = user;
-        const res = await this.request('auth/register', 
-                            {username, password, firstName, email, city, distancePref}, 'post');
-        ArtistTrackerApi.token = res.token;
-        const newUser = {id:res.newUser.id, username:res.newUser.username,
-            firstName: res.newUser.firstName, email: res.newUser.email, 
-            city: res.newUser.city, distance: res.newUser.distancePref}
-        return {token: res.token, newUser};
-      } catch(err) {
-        console.log(err)
-      }
-    }
-
-    /** Returns an array of city objects to use in autocomplete. */
-
-    static async getCitiesForAutocomplete(str) {
-      try {
-        const res = await this.request('search/cities', {city:str});
-        return res;
-      } catch(err) {
-        console.log(err);
-      }
-    }
-
-    /** Returns an array of artist objects to use in autocomplete. */
-
-    static async getArtistsForAutocomplete(str) {
-      try {
-        const res = await this.request('search/artistsByName', {artist: str});
-
-        return res;
-      } catch(err) {
-        console.log(err);
-      }
-    }
-
-    /** Returns array of user's favorite artists. */
-
-    static async getArtistsForUser(userId) {
-      try {
-        const res = await this.request(`users/${userId}/artists`);
-
-        return res;
-      } catch(err) {
-        console.log(err);
-      }
-    }
-
-}
+ }
 
 export default ArtistTrackerApi;

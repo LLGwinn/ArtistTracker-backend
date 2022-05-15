@@ -16,7 +16,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 class User {
 
   /** Authenticate user with username, password.
-   *  Returns { id, username, firstName, email, city, distancePref, isAdmin }
+   *  Returns { id, username, firstName, email, city, radius, isAdmin }
    *
    *  Throws UnauthorizedError is user not found or wrong password.
    **/
@@ -30,7 +30,7 @@ class User {
                   fname AS "firstName",
                   email,
                   base_city AS "city",
-                  distance_pref AS "distancePref",
+                  radius,
                   is_admin
            FROM users
            WHERE username = $1`,
@@ -52,13 +52,13 @@ class User {
   }
 
   /** Register new user with given data.
-   *  Returns { id, username, firstName, email, city, distancePref, isAdmin }
+   *  Returns { id, username, firstName, email, city, radius, isAdmin }
    *
    *  Throws BadRequestError on duplicates.
    **/
 
   static async register(
-      { username, password, firstName, email, city, distancePref, isAdmin }) {
+      { username, password, firstName, email, city, radius, isAdmin }) {
     // look for duplicate username in database
     const duplicateCheck = await db.query(
           `SELECT username
@@ -80,18 +80,18 @@ class User {
             fname,
             email,
             base_city,
-            distance_pref,
+            radius,
             is_admin)
            VALUES ($1, $2, $3, $4, $5, $6, $7)
            RETURNING id, username, fname AS "firstName", email, base_city AS "city", 
-                     distance_pref AS "distancePref", is_admin AS "isAdmin"`,
+                     radius, is_admin AS "isAdmin"`,
         [
           username,
           hashedPassword,
           firstName,
           email,
-          city,
-          distancePref,
+          +city,
+          radius,
           isAdmin
         ],
     );
@@ -103,7 +103,7 @@ class User {
 
   /** Find all users.
    *
-   * Returns [{ username, firstName, email, city, distancePref, isAdmin }, ...]
+   * Returns [{ username, firstName, email, city, radius, isAdmin }, ...]
    **/
 
   static async findAllUsers() {
@@ -113,7 +113,7 @@ class User {
                   fname AS "firstName",
                   email,
                   base_city AS "city",
-                  distance_pref AS "distancePref",
+                  radius,
                   is_admin
            FROM users
            ORDER BY username`,
@@ -138,7 +138,7 @@ class User {
                   fname AS "firstName",
                   email,
                   base_city AS "city",
-                  distance_pref AS "distancePref"
+                  radius
            FROM users
            WHERE id = $1`,
         [id],
@@ -181,7 +181,6 @@ class User {
         {
           firstName: "fname",
           city: "base_city",
-          distancePref: "distance_pref"
         });
     const userIdVarIdx = "$" + (values.length + 1);
 
@@ -193,7 +192,7 @@ class User {
                                 fname AS "firstName",
                                 email,
                                 base_city AS "city",
-                                distance_pref AS "distance_pref",
+                                radius,
                                 is_admin AS "isAdmin"`;
     const result = await db.query(querySql, [...values, id]);
     const user = result.rows[0];
@@ -226,8 +225,7 @@ class User {
         `SELECT a.* FROM users_artists ua
          JOIN artists a
          ON ua.artist_id = a.id
-         WHERE ua.user_id=$1`,
-         [userId]
+         WHERE ua.user_id=${userId}`
     );
 
     const artists = result.rows;
@@ -235,6 +233,41 @@ class User {
     if (!artists) throw new NotFoundError(`No artists saved for User ${userId}`);
 
     return result.rows;
+  }
+
+  /** Return a list of saved events for given user. */
+
+  static async findUserEvents(userId) {
+    const result = await db.query(
+        `SELECT e.*, a.artist_name
+          FROM users_events ue
+          JOIN events e
+          ON ue.event_id = e.id
+          JOIN artists a
+          ON e.artist = a.id
+          WHERE ue.user_id=${userId}`
+    );
+
+    const events = result.rows;
+    console.log('rows========', result.rows)
+
+    if (!events) throw new NotFoundError(`No events saved for User ${userId}`);
+
+    return result.rows;
+  }
+
+  /** Remove user/artist record from users_artists */
+
+  static async deleteUserArtist(id, artistId) {
+    const result = await db.query(
+      `DELETE FROM users_artists
+       WHERE user_id=$1 AND artist_id=$2
+       RETURNING user_id, artist_id`,
+       [id, artistId]
+    )
+
+    if (!result.rows[0]) return ('No matching record. No deletion performed.')
+    else return ('Deleted artist from user favorites.')
   }
 
 }

@@ -27,7 +27,7 @@ function Login( {login} ) {
             </div>
             <div className="row justify-content-center py-2">
                 <div className='col-sm-8 col-md-6'>
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} autoComplete='off'>
                         <Form.Group className="mx-auto mb-3 col-6">
                             <Form.Label>Username</Form.Label>
                             <Form.Control type='text' 

@@ -61,9 +61,10 @@ class ApiCalls {
         const artist = artistRes.data ? artistRes.data : [];
 
         let homepage;
-        if (artist.length && artist.externalLinks) {
+
+        if (artist !== [] && artist.externalLinks) {
             if (artist.externalLinks.homepage) {
-                homepage = artist.externalLinks.homepage[0];
+                homepage = artist.externalLinks.homepage[0].url;
             }
         } else {homepage = ""};
         
@@ -121,6 +122,19 @@ class ApiCalls {
         const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
         const res = await axios.get(
             `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
+            {headers}
+        )
+        return res.data.data;
+    }
+
+    /** Returns city object based on id. */
+
+    static async getCity(id) {
+        const url = `https://wft-geo-db.p.rapidapi.com/v1/geo/cities/${id}`;
+        const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
+
+        const res = await axios.get(
+            `${url}?cityId=${id}&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
             {headers}
         )
         return res.data.data;

@@ -22,7 +22,7 @@ function GuestForm() {
     const [submitted, setSubmitted] = useState(false);
 
     const debounceLoadCities = useCallback(
-                                debounce(str => fetchCities(str), 1000), []);
+                                debounce(str => fetchCities(str), 1200), []);
 
     const debounceLoadArtists = useCallback(
         debounce(str => fetchArtists(str), 1000), []);
@@ -84,18 +84,19 @@ function GuestForm() {
         (submitted === false)
         ?
         <>
-            <Form className="GuestForm" onSubmit={handleSubmit}>
+            <Form className="GuestForm" onSubmit={handleSubmit} autoComplete='off'>
                 <Form.Group className="mb-3">
                     <Form.Label>Which artist would you like to see?</Form.Label>
                     <Form.Control id='artistSearch' 
                                 type='text' 
                                 name='selectedArtist' 
-                                onClick={() => setArtistOptionsDisplay(!artistOptionsDisplay)}
+                                autoComplete='off'
+                                onClick={() => setArtistOptionsDisplay(true)}
                                 onChange={artistSearchChange} 
                                 value={artistSearch} 
                                 className='artistSearch'/>
                     {artistOptionsDisplay && (
-                        <div className='autocompleteContainer ps-3 mt-1'>
+                        <div className='GuestForm-autocompleteContainer ps-3 mt-1'>
                             {autocompleteArtists.map(artist => {
                                 return (
                                     <div className='autocompleteOption' 
@@ -114,12 +115,13 @@ function GuestForm() {
                     <Form.Control id='citySearch' 
                                   type='text' 
                                   name='selectedCity' 
-                                  onClick={() => setCityOptionsDisplay(!cityOptionsDisplay)}
+                                  autoComplete='off'
+                                  onClick={() => setCityOptionsDisplay(true)}
                                   onChange={citySearchChange} 
                                   value={citySearch} 
                                   className='citySearch'/>
                     {cityOptionsDisplay && (
-                        <div className='autocompleteContainer ps-3 mt-1'>
+                        <div className='GuestForm-autocompleteContainer ps-3 mt-1'>
                             {autocompleteCities.map(city => {
                                 return (
                                     <div className='autocompleteOption' 
@@ -133,21 +135,21 @@ function GuestForm() {
                         </div>
                     )}
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formDistance">
-                    <Form.Label>Search radius</Form.Label>
+                <Form.Group className="GuestForm-radius mb-3" controlId="radius">
+                    <Form.Label>Search radius (miles)</Form.Label>
                     <Form.Control type="number"
                                   name="radius" 
                                   value={radius ?? ""} 
                                   onChange={radiusChange} />
                 </Form.Group>
 
-                <Button type="submit">Find my artist!</Button>
+                <Button type="submit" className="mt-3">Find my artist!</Button>
             </Form>
         </>
         :
         <>
-            <EventList artistInfo={selectedArtist} cityInfo={selectedCity} radius={radius} />
-            <Button href="/" className="mt-2">Find another artist</Button>
+            <EventList artistDetails={selectedArtist} cityInfo={selectedCity} radius={radius} />
+            <Button href="/" className="mt-2">New Search</Button>
         </>
     )
 }

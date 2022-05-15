@@ -9,17 +9,16 @@ const Event = require("../models/Event");
 
 const router = express.Router();
 
-/** POST /events { event }  => { event }
+/** POST /events/add { event, UserId }  => { event }
  *
- *  Adds new event.
- *  Returns newly created event: { event: { id, event_name } }
+ *  Adds new event to events and events_artists if not duplicate.
  *  
  **/
 
- router.post("/", async function (req, res, next) {
+ router.post("/add", async function (req, res, next) {
     try {
       const event = await Event.addEvent(req.body);
-      return res.status(201).json({ event });
+      return res.status(201).json( event );
     } catch (err) {
       return next(err);
     }

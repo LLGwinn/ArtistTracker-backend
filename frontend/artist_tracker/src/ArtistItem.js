@@ -1,28 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import ArtistTrackerApi from './api';
+import userContext from './userContext';
 import './ArtistItem.css';
 
-function ArtistItem( {artistId} ) {
-    const [artist, setArtist] = useState({});
+function ArtistItem( {artist, remove} ) {
+    //const {currUser} = useContext(userContext);
 
-    useEffect(() => {
-        async function findArtist(id) {
-            try {
-                const res = await ArtistTrackerApi.getArtistById(id);
-                setArtist(res.artist);
-            } catch(err) {
-                console.log(err);
-            }
-        }
-        findArtist(artistId); 
-        console.log('AFTER THE CALL', artist)
-    }, [])
-
+    const handleClick = async (evt) => {
+        evt.preventDefault();
+        await remove(artist.id)
+    }
 
     return (
-        <div className='ArtistItem'>
-            <img src={artist.image} alt='artist' className='img-fluid' />
+        <div className='border-bottom p-1'>
             {artist.name}
+            <button className="ArtistItem-button mt-1" onClick={handleClick}>X</button>         
         </div>
     )
 

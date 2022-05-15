@@ -1,22 +1,21 @@
 import React, { useContext } from 'react';
 import {Route, Routes} from 'react-router-dom';
-import AuthContext from './authContext';
+import userContext from './userContext';
 import HomeGuest from './HomeGuest';
 import HomeUser from './HomeUser';
 import Profile from './Profile';
-import RSVPs from './RSVPs';
+import SavedEvents from './SavedEvents';
 import SignupForm from './SignupForm';
 import Login from './Login';
 import EventList from './EventList';
 import NotFound from './NotFound';
 import AddArtistForm from './AddArtistForm';
 
-function AppRoutes( {signup, login, update, logout}) {
-    const {currUser} = useContext(AuthContext);
+function AppRoutes( {signup, login, update, logout, add, removeArtist}) {
+    const {currUser} = useContext(userContext);
 
     return (
         <>
-            {/* if user logged in '/' should render HomeUser, else HomeGuest */}
             <Routes>
                 <Route path='/'
                     element={currUser 
@@ -24,10 +23,7 @@ function AppRoutes( {signup, login, update, logout}) {
                                     : <HomeGuest />}
                 />
                 <Route path='/profile/:id'
-                    element={<Profile update={update} />}
-                />
-                <Route path='/rsvps'
-                    element={<RSVPs />}
+                    element={<Profile removeArtist={removeArtist} />}
                 />
                 <Route path='/signup'
                     element={<SignupForm signup={signup}/>}
@@ -35,11 +31,11 @@ function AppRoutes( {signup, login, update, logout}) {
                 <Route path='/login'
                     element={<Login login={login}/>}
                 />
-                <Route path='/events'
-                    element={<EventList />}
+                <Route path='/events/:id'
+                    element={<SavedEvents />}
                 />
                 <Route path='/addArtist'
-                    element={<AddArtistForm />}
+                    element={<AddArtistForm add={add}/>}
                 />
                 <Route path='*' element={<NotFound />}></Route>
             </Routes>

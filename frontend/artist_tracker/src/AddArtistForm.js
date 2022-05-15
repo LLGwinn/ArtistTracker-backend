@@ -3,18 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ArtistTrackerApi from './api';
-import AuthContext from './authContext';
+import userContext from './userContext';
+import './AddArtistForm.css'
 
 const _ = require('lodash');
 const {debounce} = _;
 
-function AddArtistForm() {
+function AddArtistForm( {add} ) {
     const [artistSearch, setArtistSearch] = useState("");
     const [autocompleteArtists, setAutocompleteArtists] = useState([]);
     const [selectedArtist, setSelectedArtist] = useState({name:""});
     const [artistOptionsDisplay, setArtistOptionsDisplay] = useState(false);
 
-    const {currUser} = useContext(AuthContext);
+    const {currUser, setUsersSavedArtists} = useContext(userContext);
     const navigate = useNavigate();
 
     const debounceLoadArtists = useCallback(
@@ -31,9 +32,7 @@ function AddArtistForm() {
 
     async function updateUserArtists(evt) {
         try {
-            evt.preventDefault();
-            await ArtistTrackerApi.addArtistToUser(
-                selectedArtist.id, selectedArtist.name, currUser.id);
+            add(selectedArtist.id, selectedArtist.name, currUser.id);
             navigate('/');
         } catch(err) {
             console.log(err);
@@ -54,22 +53,22 @@ function AddArtistForm() {
     }
 
     return (
-        <div className='container-fluid'>
+        <div className='AddArtistForm container-fluid'>
             <div>
-                <p className="display-5">Add an artist to your account:</p>
+                <p className="display-5 mb-5 mt-4">Add an artist to your account:</p>
             </div>
-            <Form>
+            <Form autoComplete='off'>
                 <Form.Group>
                     <Form.Label>Artist name:</Form.Label>
                     <Form.Control id='artistSearch' 
                                   type='text' 
                                   name='selectedArtist' 
-                                  onClick={() => setArtistOptionsDisplay(!artistOptionsDisplay)}
+                                  onClick={() => setArtistOptionsDisplay(true)}
                                   onChange={artistSearchChange} 
                                   value={artistSearch} 
-                                  className='artistSearch'/>
+                                  className='artistSearch mb-3'/>
                     {artistOptionsDisplay && (
-                        <div className='autocompleteContainer ps-3 mt-1'>
+                        <div className='AddArtist-autocompleteContainer ps-3 mt-1'>
                             {autocompleteArtists.map(artist => {
                                 return (
                                     <div className='autocompleteOption' 
@@ -84,7 +83,7 @@ function AddArtistForm() {
                     )}
                 </Form.Group>
                 <Button variant='success'
-                        className='mt-3'
+                        className='mt-5'
                         onClick={updateUserArtists}>Add this artist to my favorites!</Button>
             </Form>
         </div>

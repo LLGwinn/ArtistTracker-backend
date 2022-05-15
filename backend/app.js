@@ -9,8 +9,8 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const artistsRoutes = require("./routes/artists");
 const usersRoutes = require('./routes/users');
-const extApiRoutes = require('./routes/extAPI');
-// const jobsRoutes = require("./routes/jobs");
+const searchRoutes = require('./routes/search');
+const eventsRoutes = require("./routes/events");
 
 const morgan = require("morgan");
 
@@ -24,9 +24,8 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/artists", artistsRoutes);
 app.use("/users", usersRoutes);
-app.use("/search", extApiRoutes);
-// app.use("/jobs", jobsRoutes);
-
+app.use("/search", searchRoutes);
+app.use("/events", eventsRoutes)
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {

@@ -1,0 +1,16 @@
+
+.AddArtistForm input {
+    width: 40%;
+    margin: auto;
+  }
+
+.AddArtist-autocompleteContainer {
+    text-align: left;
+    font-size: smaller;
+    font-style: italic;
+    background-color: lightblue;
+    color: black;
+    width: 40%;
+    margin:auto;
+    cursor: pointer;
+}

@@ -33,7 +33,6 @@ const router = express.Router();
 
 router.get("/:id", async function (req, res, next) {
     try {
-      console.log('at /artists/:id')
       const artist = await Artist.getArtist(req.params.id);
       return res.json({artist});
     } catch (err) {

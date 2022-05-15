@@ -32,6 +32,7 @@ router.get("/artistsByName", async function (req, res, next) {
  */
 
  router.get("/artistById", async function (req, res, next) {
+  async function fetchArtist() {
   try {
     const artistId = req.query.artistId;
     const artist = await ApiCalls.getArtistById(artistId);
@@ -40,6 +41,8 @@ router.get("/artistsByName", async function (req, res, next) {
   } catch (err) {
     return next(err);
   }
+  }
+  setTimeout(fetchArtist, 1000);
 });
 
 /**
@@ -67,6 +70,16 @@ router.get("/cities", async function (req, res,next) {
     const city = req.query.city;
     const cities = await ApiCalls.getCities(city);
     return res.json({cities});
+  } catch(err) {
+    return next(err);
+  }
+})
+
+router.get("/city/:id", async function (req, res,next) {
+  try {
+    const {id} = req.params;
+    const city = await ApiCalls.getCity(id);
+    return res.json({city});
   } catch(err) {
     return next(err);
   }

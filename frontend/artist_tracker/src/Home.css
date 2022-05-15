@@ -3,3 +3,8 @@
     border-radius: 8px;
     padding: 20px;
 }
+
+.Home-eventList {
+    height: 65%;
+    overflow-y: scroll;
+}

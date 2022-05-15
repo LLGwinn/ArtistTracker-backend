@@ -3,19 +3,13 @@ import { useState, useEffect } from 'react';
 import NavbarComp from './Navbar';
 import AppRoutes from './Routes';
 import ArtistTrackerApi from './api';
-import AuthContext from './authContext';
+import userContext from './userContext';
 import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [currUser, setCurrUser] = useState(JSON.parse(localStorage.getItem('currUser')));
-  // try {
-  //   if (currUser) {
-  //     JSON.parse(localStorage.getItem('currUser'));
-  //   }
-  // } catch (err) {
-  //   console.log('currUser is undefined', err);
-  // }
+  const [usersSavedArtists, setUsersSavedArtists] = useState([]);
 
   const navigate = useNavigate();
 
@@ -23,6 +17,14 @@ function App() {
     localStorage.setItem('token', token);
     localStorage.setItem('currUser', JSON.stringify(currUser));
   }, [token, currUser])
+
+  useEffect(function getUsersSavedArtists() {
+    async function findSavedArtists() {
+      const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
+      if(currUser && res.artists) updateUserArtistsInState(res.artists);
+    }
+    findSavedArtists();
+  }, [])
 
   async function login(username, password) {
     try {
@@ -52,14 +54,55 @@ function App() {
     navigate('/');
   }
 
+  async function addArtist(artistId, artistName, userId) {
+    try {
+      await ArtistTrackerApi.addArtistToUser(artistId, artistName, userId);
+      const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
+      setUsersSavedArtists([]);
+      if(currUser && res.artists) updateUserArtistsInState(res.artists);
+      navigate('/');
+    } catch(err) {
+        console.log(err);
+    }
+  }
+
+  async function removeArtist(artistId) {
+    const message = await ArtistTrackerApi.removeArtistFromUser(currUser.id, artistId);
+    const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
+    setUsersSavedArtists([]);
+    if(currUser && res.artists) updateUserArtistsInState(res.artists);
+
+    alert(message.deleteMessage);
+  }
+
+  async function updateUserArtistsInState(artistArray) {
+    try {
+      for (let artist of artistArray) {
+        const artistDetails = await ArtistTrackerApi.getArtistById(artist.id)
+
+        const addArtistToState = artist => {
+          setUsersSavedArtists(usersSavedArtists => [...usersSavedArtists, artist]);
+        }
+        addArtistToState(artistDetails);
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   return (
       <div className="App">
-          <AuthContext.Provider value={{currUser, setCurrUser, token}}>
+          <userContext.Provider value={{currUser, setCurrUser, token, usersSavedArtists, setUsersSavedArtists}}>
               <NavbarComp logout={logout}/>
               <div className="App-main container-fluid">
-                <AppRoutes signup={signup} login={login} logout={logout}/>
+                <AppRoutes signup={signup} 
+                           login={login} 
+                           logout={logout}
+                           add={addArtist}
+                           removeArtist={removeArtist}
+                           updateUserArtistsInState={updateUserArtistsInState} />
               </div>
-          </AuthContext.Provider>
+          </userContext.Provider>
       </div>
   );
 }

@@ -11,12 +11,17 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 //     <App />
 //   </React.StrictMode>
 // );
+// root.render(
+//   <React.StrictMode>
+//     <BrowserRouter>
+//       <App />
+//     </BrowserRouter>
+//   </React.StrictMode>
+// );
 root.render(
-  <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
 );
 
 

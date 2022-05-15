@@ -1,79 +1,95 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ArtistTrackerApi from './api';
 import Button from 'react-bootstrap/Button';
 import "./EventList.css";
-import AuthContext from './authContext';
+import userContext from './userContext';
+import { Navigate } from 'react-router-dom';
 
 /** Renders a list of events in table format for an artist.
  * 
  *  If user is logged in, shows button to save an event to their account.
  */
 
-function EventList( {artistInfo, cityInfo, radius} ) {
+function EventList( {artistDetails, cityInfo, radius} ) {
     const [events, setEvents] = useState([]);
-    const {currUser} = useContext(AuthContext);
+    const {currUser} = useContext(userContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Get events for the artist on page render
-        async function getArtistEvents(artistId, cityLat, cityLong, radius) {
-            const res = await ArtistTrackerApi.getEventsForArtist(
-                artistId, cityLat, cityLong, radius)
-            if (res.events) setEvents(res.events);
-        }
+        if (artistDetails && cityInfo.latitude) getEvents();
+    }, [cityInfo])
 
-        if (artistInfo.id !== '') {
-            getArtistEvents(artistInfo.id, cityInfo.latitude, cityInfo.longitude, radius);
+    async function getEvents() {
+        try {
+            const eventsRes = await ArtistTrackerApi.getEventsForArtist(
+                artistDetails.id, cityInfo.latitude, cityInfo.longitude, radius)
+            if (eventsRes) setEvents(eventsRes.events);
+        } catch(err) {
+            console.log(err)
         }
-    }, [])
+    }
+
+    async function saveEvent(e) {
+        try {
+            await ArtistTrackerApi.addEventToUser(e, currUser.id);
+            navigate(`/events/${currUser.id}`);
+        } catch(err) {
+            console.log(err);
+        }
+    }
 
     return(
-        <>
-            <div className="EventList container p-0 border border-light">
-                <div className="row align-items-center">
-                    <div className="col-2">
-                        <img src={artistInfo.image} alt='artist' className='img-fluid'/>
-                    </div>
-                    <div className='EventList-title col-10'>
-                        <div className='row'>
-                            <p className="fs-2">{artistInfo.name}</p>
-                        </div>
-                    </div>
-                    <div className='row'>
-                        {(events.length)
-                        ?
-                        <table className='table'>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Venue</th>
-                                    <th>City</th>
-                                    <th>State</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {events.map(e => {
-                                        return (<tr key={e.id}>
-                                            <td>{new Date(e.datetime).toLocaleDateString()}</td>
-                                            <td>{e.venue}</td>
-                                            <td>{e.venueCity}</td>
-                                            <td>{e.venueState}</td>
-                                            {currUser &&
-                                            <td><Button size="sm">Save</Button></td>
-                                            }
-                                          </tr>)
-                                    })
-                                }     
-                            </tbody>
-                        </table>
-                        :
-                        <div className='p-5'>NO EVENTS AT THIS TIME</div>
+        <div className="EventList container">
+            <div className="card mb-3">
+                <div className="card-body">
+                    <img className="img-fluid" src={artistDetails.image} alt="artist" />
+                    <h5 className="card-title text-dark h1">
+                        {(artistDetails.homepage !== '')
+                            ? <a href={artistDetails.homepage} target="_blank">{artistDetails.name}</a>
+                            : artistDetails.name
+                        }
+                    </h5>
+                        
+                    {(events.length)
+                    ? <table className='table'>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Venue</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {events.map(e => {
+                            return (<tr key={e.id}>
+                                        <td>{new Date(e.datetime).toLocaleDateString()}</td>
+                                        <td>{e.venue}</td>
+                                        <td>{e.venueCity}</td>
+                                        <td>{e.venueState}</td>
+                                        {currUser &&
+                                            <td><Button size="sm" onClick={() => saveEvent(e)}>Save</Button></td>
+                                        }
+                                        <td><Button size="sm" 
+                                                onClick={() => window.open(e.url,'_blank')}>Tickets</Button></td>
+                                    </tr>)
+                        })
+                        }     
+                        </tbody>
+                    </table>
+                    :
+                    <div className='text-dark'>NO EVENTS WITHIN SEARCH RADIUS</div>
                     }
-                    </div>    
                 </div>
+                {/* end card body */}
             </div>
-        </>
+            {/* end card */}
+        </div> 
     )
 }
 
 export default EventList;
+

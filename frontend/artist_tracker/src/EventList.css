@@ -1,12 +1,15 @@
 .EventList img {
     float: left;
-}
-
-
-.EventList-title {
-    justify-content: center;
+    width: 200px;
 }
 
 .EventList table {
-    color: white;
+    color: black;
 }
+
+.EventList a {
+    text-decoration: none;
+    color: black;
+}
+
+

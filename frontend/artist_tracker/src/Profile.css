@@ -2,10 +2,27 @@
     justify-content: center;
 }
 
+.Profile-content {
+    flex-direction: row;
+}
+
+
 .Profile label {
     text-align: right;
 }
 
-.Profile ul {
-    list-style-type: none;
+.autocompleteContainer {
+    text-align: left;
+    font-size: smaller;
+    background-color: lightgrey;
+    color: black;
+    width: 90%;
+    margin:auto;
+    cursor: pointer;
+}
+
+.Profile-artists {
+    justify-content: center;
+    overflow-y: scroll;
+    height: 340px;
 }

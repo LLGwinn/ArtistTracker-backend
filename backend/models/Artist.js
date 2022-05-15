@@ -21,13 +21,13 @@ const {
         // check users_artists for duplicate
         const duplicateUsersArtistsCheck = await db.query(
             `SELECT *
-            FROM users_artists
-            WHERE user_id = $1 AND artist_id = $2`,
-            [data.userId, data.artistId]
-        )
+             FROM users_artists            
+             WHERE (user_id = $1 AND artist_id = $2)`,
+             [data.userId, data.artistId]
+        );
         if (duplicateUsersArtistsCheck.rows[0]) {
-            alert(`Artist is already saved for this user.`);
-            return;
+            throw new BadRequestError (`Artist is already saved for this user.`);
+            // or an alert so it doesn't stop execution
         }
 
         // look for duplicate artist id in artists table
@@ -35,7 +35,7 @@ const {
             `SELECT id
              FROM artists
              WHERE id = $1`,
-             [data.artistId],
+             [data.artistId]
         );
         // if artist is not already in artists table, add it
         if (!duplicateArtistCheck.rows[0]) {
@@ -65,11 +65,9 @@ const {
 
     static async getArtist(id) {
         const artistRes = await db.query(
-            `SELECT id,
-                    artist_name
+            `SELECT id, artist_name
             FROM artists
-            WHERE id = $1`,
-            [id],
+            WHERE id = ${id}`
         );
 
         const artist = artistRes.rows[0];

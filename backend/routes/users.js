@@ -103,7 +103,7 @@ router.patch("/:id", ensureCorrectUser, async function (req, res, next) {
 });
 
 
-/** DELETE /users/[username]  =>  { deleted: username }
+/** DELETE /users/[id]  =>  { deleted: username }
  *
  * Authorization required: admin or same-user-as-:username
  **/
@@ -118,7 +118,7 @@ router.delete("/:id", ensureCorrectUser, async function (req, res, next) {
 });
 
   
-/** GET /users/:id/artists  => {artists: [user_id, artist_id]} 
+/** GET /users/:id/artists  => {artists: [...]} 
  * 
  *  Gets a list of artists for a given user.
 */
@@ -132,23 +132,35 @@ router.get("/:id/artists", async function (req, res, next) {
   }
 });
 
+/** GET /users/:id/events  => {events: [...]}
+ * 
+ *  Gets a list of user's saved events.
+*/
 
-/** POST /[username]/jobs/[id]  { state } => { application }
- *
- * Returns {"applied": jobId}
- *
- * Authorization required: admin or same-user-as-:username
- * */
+router.get("/:id/events", async function (req, res, next) {
+  try {
+    const events = await User.findUserEvents(req.params.id);
+    return res.json({events})
+  } catch(err) {
+    return next(err);
+  }
+});
 
-// router.post("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
-//   try {
-//     const jobId = +req.params.id;
-//     await User.applyToJob(req.params.username, jobId);
-//     return res.json({ applied: jobId });
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+/** DELETE /users/[userId]/artists  => {deleted: artist_name from username} 
+ * 
+ *  Removes record from users_artists for given user/artist.
+*/
+
+router.delete("/:id/artists", async function (req, res, next) {
+  try {
+    const deleteMessage = await User.deleteUserArtist(req.params.id, req.body.artistId);
+    return res.json({deleteMessage})
+  } catch(err) {
+    return next(err);
+  }
+});
+
+
 
 
 

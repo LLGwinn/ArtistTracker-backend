@@ -3,11 +3,18 @@
   margin: auto;
 }
 
-.autocompleteContainer {
+.GuestForm-autocompleteContainer {
   text-align: left;
-  background-color: lightgrey;
+  font-size: smaller;
+  font-style: italic;
+  background-color: lightblue;
   color: black;
-  width: 30%;
+  width: 50%;
   margin:auto;
   cursor: pointer;
+}
+
+.GuestForm-radius {
+  width: 30%;
+  margin: auto;
 }

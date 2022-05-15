@@ -23,11 +23,11 @@
         "format": "email"
       },
       "city": {
-        "type": "string",
+        "type": "integer",
         "minLength": 2,
         "maxLength": 60
       },
-      "distancePref": {
+      "radius": {
         "type": "integer",
         "minimum": 1
       }

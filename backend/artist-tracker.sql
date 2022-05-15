@@ -10,8 +10,8 @@ CREATE TABLE users (
   fname TEXT NOT NULL,
   email TEXT NOT NULL
     CHECK (position('@' IN email) > 1),
-  base_city TEXT NOT NULL,
-  distance_pref INT,
+  base_city INTEGER NOT NULL,
+  radius INT,
   is_admin Boolean NOT NULL DEFAULT false
 );
 
@@ -22,7 +22,13 @@ CREATE TABLE artists (
 
 CREATE TABLE events (
   id TEXT PRIMARY KEY,
-  event_name TEXT NOT NULL
+  event_name TEXT NOT NULL,
+  artist TEXT NOT NULL,
+  event_date DATE NOT NULL,
+  event_url TEXT,
+  venue TEXT NOT NULL,
+  venue_city TEXT NOT NULL,
+  venue_state TEXT NOT NULL
 );
 
 CREATE TABLE users_artists (
