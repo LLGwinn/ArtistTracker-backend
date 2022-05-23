@@ -13,7 +13,7 @@ const _ = require('lodash');
 const {debounce} = _;
 
 
-function Profile( {removeArtist} ) {  
+function Profile( {removeArtist, logout} ) {  
     const {id} = useParams();
     const {currUser, setCurrUser, token, usersSavedArtists, setUsersSavedArtists} = useContext(userContext);
     const [formData, setFormData] = useState(
@@ -102,6 +102,15 @@ function Profile( {removeArtist} ) {
           console.log(err);
         }
       }
+
+    async function deleteAccount(evt) {
+        evt.preventDefault();
+        if (window.confirm('Are you sure you want to delete your account?')) {
+            const res = await ArtistTrackerApi.deleteUserAccount(currUser.id, token);
+            if (res) alert('Account deleted. Thanks for playing!');
+            logout();
+        }
+    }
 
     if (!token) return <UnauthorizedMessage />;
 
@@ -205,7 +214,13 @@ function Profile( {removeArtist} ) {
                 </div>
             </div> 
             {/* ^ end content row */}
-            <Button variant="outline-primary" href="/" className="mx-auto">Back to my homepage</Button>
+            <div className="row">
+                <Button variant="success" href="/" className="Profile-homeBtn col-3 my-auto">Back to my homepage</Button>
+                <Button variant="outline-danger" 
+                        size="sm" 
+                        className='col-1 ms-auto'
+                        onClick={deleteAccount}>Delete My Account</Button>
+            </div>
         </div>
     )
 }

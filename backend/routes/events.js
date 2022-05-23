@@ -1,15 +1,12 @@
 "use strict";
 
-/** Routes for events. */
-
 const express = require("express");
 const { ensureAdmin } = require("../middleware/auth");
-const { BadRequestError } = require("../errors");
 const Event = require("../models/Event");
 
 const router = express.Router();
 
-/** POST /events/add { event, UserId }  => { event }
+/** POST /events/add { event, UserId }  => { event: user_id, event_id }
  *
  *  Adds new event to events and events_artists if not duplicate.
  *  
@@ -17,7 +14,7 @@ const router = express.Router();
 
  router.post("/add", async function (req, res, next) {
     try {
-      const message = await Event.addEvent(req.body);
+      const message = await Event.addEvent(req.body.event, req.body.userId);
       return res.status(201).json( message );
     } catch (err) {
       return next(err);
@@ -25,11 +22,7 @@ const router = express.Router();
   });
 
 
-/** GET events/[id] => { event }
- * 
- *  Returns { id, event_name }
- * 
- **/
+/** GET events/[id] => { event: ...all the event data } **/
 
 router.get("/:id", async function (req, res, next) {
     try {
@@ -41,18 +34,18 @@ router.get("/:id", async function (req, res, next) {
   });
 
 
-/** DELETE /events/[id]  =>  { deleted: id }
- *
- *  Authorization required: admin
- **/
+// /** DELETE /events/[id]  =>  { deleted: id }
+//  *
+//  *  Authorization required: admin
+//  **/
 
-router.delete("/:id", ensureAdmin, async function (req, res, next) {
-    try {
-      const message = await Artist.removeEvent(req.params.id);
-      return res.json( message )
-    } catch (err) {
-      return next(err);
-    }
-  });
+// router.delete("/:id", ensureAdmin, async function (req, res, next) {
+//     try {
+//       const message = await Artist.removeEvent(req.params.id);
+//       return res.json( message )
+//     } catch (err) {
+//       return next(err);
+//     }
+//   });
 
   module.exports = router;

@@ -2,16 +2,17 @@
 
 const axios = require ('axios');
 
-const baseURL = 'https://app.ticketmaster.com';
+const tmURL = 'https://app.ticketmaster.com';
+const citiesURL = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
 const {TICKETMASTER_API_KEY, GEOCITIES_API_KEY} = require ('../config.js'); 
 
 class ApiCalls {
 
     /**
      * Accepts name, which can be partial:
-     *      ex: 'Don' might return Don Henley, Don Draper, etc.
+     *      ex: 'Don' might return Don Henley, Don Draper, Donica, etc.
      *  
-     * Returns array of artists (with details) for those matching given name.
+     * Returns array of artists (with detail data) for artists matching given name.
      *  
      */
 
@@ -21,8 +22,8 @@ class ApiCalls {
         }
         // get artists matching name
         const artistRes = await axios.get(
-           `${baseURL}/discovery/v2/attractions.json?keyword=${name}&apikey=${TICKETMASTER_API_KEY}`);
-        // array of artists based on keyword
+           `${tmURL}/discovery/v2/attractions.json?keyword=${name}&apikey=${TICKETMASTER_API_KEY}`);
+        // array of artists based on name
         const artists = artistRes.data._embedded ? artistRes.data._embedded.attractions : [];
 
         let homepage;
@@ -46,7 +47,6 @@ class ApiCalls {
     }
 
     /**
-     *  
      * Returns details for artist with given id.
      *  
      */
@@ -57,11 +57,10 @@ class ApiCalls {
         }
         // get artist matching id
         const artistRes = await axios.get(
-           `${baseURL}/discovery/v2/attractions/${id}.json?apikey=${TICKETMASTER_API_KEY}`);
+           `${tmURL}/discovery/v2/attractions/${id}.json?apikey=${TICKETMASTER_API_KEY}`);
         const artist = artistRes.data ? artistRes.data : [];
 
         let homepage;
-
         if (artist !== [] && artist.externalLinks) {
             if (artist.externalLinks.homepage) {
                 homepage = artist.externalLinks.homepage[0].url;
@@ -72,7 +71,7 @@ class ApiCalls {
                 id: artist.id,
                 name: artist.name,
                 homepage,
-                image: artist.images[0].url ? artist.images[0].url : 'no images to show',
+                image: artist.images[0].url ? artist.images[0].url : '',
                 ticketsURL: artist.url
         }
     
@@ -81,10 +80,6 @@ class ApiCalls {
 
     /**
      * Returns array of events for given artist, within radius of city.
-     * Results include (data._embedded.events.): 
-     *      id, name, url, dates.start.dateTime, _embedded.venues[0].name,
-     *      _embedded.venues.city.name, _embedded.venues.state.name
-     *  
      *  
      */
 
@@ -93,7 +88,7 @@ class ApiCalls {
             throw new Error('TICKETMASTER API KEY NOT FOUND');
         }
         const eventsRes = await axios.get(
-            `${baseURL}/discovery/v2/events.json?attractionId=${artistId}&radius=${radius}&unit=miles&geoPoint=${geohash}&apikey=${TICKETMASTER_API_KEY}`);
+            `${tmURL}/discovery/v2/events.json?attractionId=${artistId}&radius=${radius}&unit=miles&geoPoint=${geohash}&apikey=${TICKETMASTER_API_KEY}`);
 
         if(eventsRes.data._embedded) {
             const events = eventsRes.data._embedded.events;
@@ -115,10 +110,12 @@ class ApiCalls {
         }
     }
 
-    /** Returns array of city objects to use in autocomplete. */
+    /** Returns array of city data objects to use in autocomplete,
+     *  minimum population 20000, sorted by decreasing population.
+     */
 
     static async getCities(str) {
-        const url = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
+        const url = citiesURL;
         const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
         const res = await axios.get(
             `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
@@ -127,10 +124,10 @@ class ApiCalls {
         return res.data.data;
     }
 
-    /** Returns city object based on id. */
+    /** Returns city data object based on id. */
 
     static async getCity(id) {
-        const url = `https://wft-geo-db.p.rapidapi.com/v1/geo/cities/${id}`;
+        const url = `${citiesURL}/${id}`;
         const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
 
         const res = await axios.get(
@@ -140,7 +137,7 @@ class ApiCalls {
         return res.data.data;
     }
 
-    /** Get city's geohash. */
+    /** Retrieve city's geohash to use with radius in TM API. */
 
     static async getGeohash(lat, long) {
         const res = await axios.get(

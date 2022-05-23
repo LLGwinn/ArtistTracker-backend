@@ -2,7 +2,10 @@ import React from "react";
 
 function NotFound() {
     return(
-        <p>NOT FOUND</p>
+        <>
+            <div>Weird...can't find this page...</div>
+            <button className='btn btn-primary' href='/'>Home</button>
+        </>
     )
 }
 

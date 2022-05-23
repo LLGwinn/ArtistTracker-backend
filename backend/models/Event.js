@@ -9,12 +9,12 @@ const {
   class Event {
 
     /** Adds a new event:
-     *  If already in users_events for this user, return alert message.
+     *  If already in users_events for this user, throw error.
      * 
      *  If not:
      *      - add event to events table if not already there. 
      *      - add to users_events table
-     *      - return alert message.
+     *      - return {user_id, event_id} or Error
      *  
     */
 
@@ -24,10 +24,10 @@ const {
             `SELECT *
             FROM users_events
             WHERE user_id = $1 AND event_id = $2`,
-            [event.userId, event.event.id]
+            [userId, event.id]
         )
         if (duplicateUsersEventsCheck.rows[0]) {
-            return (`Event is already saved for this user.`);
+            throw new BadRequestError (`Duplicate record in users_events.`);
         }
 
         // look for duplicate event id in events table
@@ -35,7 +35,7 @@ const {
             `SELECT id
              FROM events
              WHERE id = $1`,
-             [event.event.id]
+             [event.id]
         );
 
         // if event is not already in events table, add it
@@ -53,8 +53,8 @@ const {
                 )
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING (id, event_name)`,
-                [event.event.id, event.event.name, event.event.datetime, event.event.artist,
-                    event.event.url, event.event.venue, event.event.venueCity, event.event.venueState]   
+                [event.id, event.name, event.datetime, event.artist, event.url, 
+                    event.venue, event.venueCity, event.venueState]   
             )
         }
 
@@ -63,27 +63,26 @@ const {
             `INSERT INTO users_events (user_id, event_id)
                 VALUES ($1, $2)
                 RETURNING user_id, event_id`,
-                [event.userId, event.event.id]
+                [userId, event.id]
         );
+        const newEvent = userEventsRes.rows[0];
+        if (!newEvent) throw new Error (`Could not add to users_events.`)
 
-        return (`Added ${event.event.name} to your saved events!`);;
+        return newEvent;
     }
 
-    /** Given an event id, return event name.
+    /** Given an event id, return event details.
     *
-    *    Throws NotFoundError if event not found.
+    *   Throws NotFoundError if event not found.
     **/
 
     static async getEvent(id) {
         const eventRes = await db.query(
-            `SELECT id, event_name
+            `SELECT *
             FROM events
-            WHERE id = $1`,
-            [id],
+            WHERE id = '${id}'`
         );
-
         const event = eventRes.rows[0];
-
         if (!event) throw new NotFoundError(`No event with id ${id}`);
 
         return event;
@@ -101,10 +100,10 @@ const {
              RETURNING id`,
              [id]
         )
+        const event = res.rows[0];
+        if (!event) throw new NotFoundError(`No record for event ${id}.`);
 
-        if (!res.rows[0]) throw new NotFoundError(`Cannot remove. No event with id ${id}`);
-
-        return ("Event removed from your saved events.");
+        return event;
     }
   }
 

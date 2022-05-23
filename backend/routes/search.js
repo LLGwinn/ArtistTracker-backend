@@ -8,7 +8,7 @@ const ApiCalls = require("../models/ApiCalls");
 const router = express.Router();
 
 /**
- *  GET /search/artistsbyName [searchTerm] => {artists: [...]}
+ *  GET /search/artistsbyName {searchTerm} => {artists: [...]}
  *  
  *  Returns array of artists with name matching searchTerm.
  */
@@ -16,17 +16,16 @@ const router = express.Router();
 router.get("/artistsByName", async function (req, res, next) {
     try {
       const artistName = req.query.artist;
+      const artists = await ApiCalls.getArtistsByKeyword(artistName);
 
-      const artist = await ApiCalls.getArtistsByKeyword(artistName);
-
-      return res.json({artist});
+      return res.json({artists});
     } catch (err) {
       return next(err);
     }
 });
 
 /**
- *  GET /search/artistsbyId [id] => {artists: [...]}
+ *  GET /search/artistbyId {id} => {artist: [...]}
  *  
  *  Returns details for artist with given id.
  */
@@ -42,18 +41,17 @@ router.get("/artistsByName", async function (req, res, next) {
     return next(err);
   }
   }
-  setTimeout(fetchArtist, 1000);
+  setTimeout(fetchArtist, 500);
 });
 
 /**
- *  GET /search/events [artistId, city, radius] => {events: [...]}
+ *  GET /search/events {artistId, city, radius} => {events: [...]}
  *  
- *  Returns array of events with radius of city for artist.
+ *  Returns array of events within radius of city for artist.
  */
 
 router.get("/events", async function (req, res, next) {
   try {
-    // sample artist:"K8vZ917G4u0" Luke Bryan
     const {id, lat, long, radius} = req.query;
 
     const geohash = await ApiCalls.getGeohash(lat, long);
@@ -65,6 +63,12 @@ router.get("/events", async function (req, res, next) {
   }
 })
 
+/**
+ *  GET /search/cities {str} => {cities: [...]}
+ *  
+ *  Returns array of cities with name matching str.
+ */
+
 router.get("/cities", async function (req, res,next) {
   try {
     const city = req.query.city;
@@ -74,6 +78,12 @@ router.get("/cities", async function (req, res,next) {
     return next(err);
   }
 })
+
+/**
+ *  GET /search/city/[id]  => {city: [...]}
+ *  
+ *  Returns city data with for city with given id.
+ */
 
 router.get("/city/:id", async function (req, res,next) {
   try {

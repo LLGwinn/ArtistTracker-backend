@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import './GuestForm.css';
@@ -39,7 +39,7 @@ function GuestForm() {
     async function fetchArtists(str) {
         try {
             const res = await ArtistTrackerApi.getArtistsForAutocomplete(str);
-            setAutocompleteArtists(res.artist);
+            setAutocompleteArtists(res.artists);
         } catch(err) {
             console.log(err);
         }  

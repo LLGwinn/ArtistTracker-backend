@@ -101,71 +101,51 @@ class User {
     return user;
   }
 
-  /** Find all users.
-   *
-   * Returns [{ username, firstName, email, city, radius, isAdmin }, ...]
-   **/
+  // /** Given a user id, return data about user.
+  //  *
+  //  * Returns { username, firstName, artists, events }
+  //  *   where artists is { id, artist_name }
+  //  *   and events is {id, event_name}
+  //  *  TODO: need to fix the artists/events return
+  //  *
+  //  * Throws NotFoundError if user not found.
+  //  **/
 
-  static async findAllUsers() {
-    const result = await db.query(
-          `SELECT id,
-                  username,
-                  fname AS "firstName",
-                  email,
-                  base_city AS "city",
-                  radius,
-                  is_admin
-           FROM users
-           ORDER BY username`,
-    );
+  // static async getUser(id) {
+  //   const userRes = await db.query(
+  //         `SELECT username,
+  //                 fname AS "firstName",
+  //                 email,
+  //                 base_city AS "city",
+  //                 radius
+  //          FROM users
+  //          WHERE id = $1`,
+  //       [id],
+  //   );
 
-    return result.rows;
-  }
+  //   const user = userRes.rows[0];
 
-  /** Given a user id, return data about user.
-   *
-   * Returns { username, firstName, artists, events }
-   *   where artists is { id, artist_name }
-   *   and events is {id, event_name}
-   *  TODO: need to fix the artists/events return
-   *
-   * Throws NotFoundError if user not found.
-   **/
+  //   if (!user) throw new NotFoundError(`No user with id ${id}`);
 
-  static async getUser(id) {
-    const userRes = await db.query(
-          `SELECT username,
-                  fname AS "firstName",
-                  email,
-                  base_city AS "city",
-                  radius
-           FROM users
-           WHERE id = $1`,
-        [id],
-    );
+  //   const userArtistsRes = await db.query(
+  //         `SELECT ua.artist_id
+  //          FROM users_artists ua
+  //          WHERE ua.user_id = $1`, [id]);
 
-    const user = userRes.rows[0];
+  //   user.artists = userArtistsRes.rows.map(a => a.artist_id);
+  //   return user;
+  // }
 
-    if (!user) throw new NotFoundError(`No user with id ${id}`);
 
-    const userArtistsRes = await db.query(
-          `SELECT ua.artist_id
-           FROM users_artists ua
-           WHERE ua.user_id = $1`, [id]);
-
-    user.artists = userArtistsRes.rows.map(a => a.artist_id);
-    return user;
-  }
-
-  /** Update user data with `data`.
+  /** Update user profile data.
    *
    * This is a "partial update" --- it's fine if data doesn't contain
    * all the fields; this only changes provided ones.
    *
-   * Data can include:
-   *   { username, firstName, password, email, city, distancePref }
+   * Data parameter can include:
+   *   { username, firstName, password, email, city, radius }
    *
-   * Returns { username, firstName, email, city, distancePref }
+   * Returns user: { id, username, firstName, email, city, radius, isAdmin }
    *
    * Throws NotFoundError if not found.
    *
@@ -203,6 +183,7 @@ class User {
     return user;
   }
 
+
   /** Delete given user from database; returns undefined. */
 
   static async removeUser(id) {
@@ -218,9 +199,20 @@ class User {
     if (!user) throw new NotFoundError(`No user with id ${id}`);
   }
 
-  /** Return a list of artists for given user. */
+
+  /** Find artists for given user. 
+   * 
+   *  Returns artists: {user_id, artist_id, artist_name}
+  */
 
    static async findUserArtists(userId) {
+    const validUserCheck = await db.query(
+      `SELECT id
+      FROM users
+      WHERE id = ${userId}`
+    )
+    if (!validUserCheck.rows[0]) throw new BadRequestError('User not found.');
+
     const result = await db.query(
         `SELECT a.* FROM users_artists ua
          JOIN artists a
@@ -230,33 +222,44 @@ class User {
 
     const artists = result.rows;
 
-    if (!artists) throw new NotFoundError(`No artists saved for User ${userId}`);
+    if (!artists) throw new NotFoundError(`No artists saved for user ${userId}`);
 
-    return result.rows;
+    return artists;
   }
 
-  /** Return a list of saved events for given user. */
+
+  /** Find events for given user. 
+   * 
+   *  Returns events: {...all the event data}
+  */
 
   static async findUserEvents(userId) {
+    const validUserCheck = await db.query(
+      `SELECT id
+      FROM users
+      WHERE id = ${userId}`
+    )
+    if (!validUserCheck.rows[0]) throw new BadRequestError('User not found.');
+
     const result = await db.query(
         `SELECT e.*, a.artist_name
           FROM users_events ue
           JOIN events e
           ON ue.event_id = e.id
           JOIN artists a
-          ON e.artist = a.id
+          ON e.artist = a.artist_name
           WHERE ue.user_id=${userId}`
     );
 
     const events = result.rows;
-    console.log('rows========', result.rows)
 
     if (!events) throw new NotFoundError(`No events saved for User ${userId}`);
 
-    return result.rows;
+    return events;
   }
 
-  /** Remove user/artist record from users_artists */
+
+  /** Remove user/artist record from users_artists, returns undefined.  */
 
   static async deleteUserArtist(id, artistId) {
     const result = await db.query(
@@ -265,12 +268,10 @@ class User {
        RETURNING user_id, artist_id`,
        [id, artistId]
     )
-
-    if (!result.rows[0]) return ('No matching record. No deletion performed.')
-    else return ('Deleted artist from user favorites.')
+    if (!result.rows[0]) throw new NotFoundError('User/Artist record not found.');
   }
 
-  /** Remove user/event record from users_events */
+  /** Remove user/event record from users_events, returns undefined. */
 
   static async deleteUserEvent(id, eventId) {
     const result = await db.query(
@@ -279,11 +280,8 @@ class User {
         RETURNING user_id, event_id`,
         [id, eventId]
     )
-
-    if (!result.rows[0]) return ('No matching record. No deletion performed.')
-    else return ("Deleted event from your saved events.")
+    if (!result.rows[0]) throw new NotFoundError('User/Event record not found.');
   }
-
 }
 
 module.exports = User;

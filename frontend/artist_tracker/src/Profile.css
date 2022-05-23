@@ -26,3 +26,8 @@
     overflow-y: scroll;
     height: 340px;
 }
+
+.Profile-homeBtn {
+    margin-left: 38%;
+    padding: 10px;
+}

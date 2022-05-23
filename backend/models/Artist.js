@@ -9,12 +9,13 @@ const {
   class Artist {
 
     /** Adds a new artist:
-     *  If already in users_artist for this user, show alert and return.
-     *  If not, add artist to artist table if not already there, 
-     *  then add to users_artists table.
+     *  If already in users_artist for this user, throw error.
+     *  If not:
+     *          - add artist to artist table if not already there 
+     *          - add to users_artists table
+     *          - return {user_id, artist_id} or Error
      *  
      *  Receives {data: artistId, artistName, userId}
-     *  Returns { user_id, artist_id }
     */
 
     static async addArtist( data ) {
@@ -26,8 +27,7 @@ const {
              [data.userId, data.artistId]
         );
         if (duplicateUsersArtistsCheck.rows[0]) {
-            throw new BadRequestError (`Artist is already saved for this user.`);
-            // or an alert so it doesn't stop execution
+            throw new BadRequestError (`Duplicate record in users_artists.`);
         }
 
         // look for duplicate artist id in artists table
@@ -54,22 +54,23 @@ const {
              RETURNING user_id, artist_id`,
              [data.userId, data.artistId]
         );
+        const artist = userArtistRes.rows[0];
+        if (!artist) throw new Error (`Could not add to users_artists.`)
 
-        return userArtistRes.rows[0];
+        return artist;
     }
 
     /** Given an artist id, return artist name.
     *
-    *    Throws NotFoundError if artist not found.
+    *   Throws NotFoundError if artist not found.
     **/
 
     static async getArtist(id) {
         const artistRes = await db.query(
             `SELECT id, artist_name
             FROM artists
-            WHERE id = ${id}`
+            WHERE id = '${id}'`
         );
-
         const artist = artistRes.rows[0];
 
         if (!artist) throw new NotFoundError(`No artist with id ${id}`);
@@ -77,24 +78,23 @@ const {
         return artist;
     }
 
-    /** Remove artist with given id from db.
-     * 
-     *  Returns undefined
-     */
+    // /** Remove artist with given id from artists table, delete cascades to users_artists.
+    //  * 
+    //  *  Returns undefined
+    //  */
 
-    static async removeArtist(id) {
-        const result = await db.query(
-            `DELETE FROM artists
-             WHERE id=$1
-             RETURNING id`,
-             [id]
-        )
-        const artist = result.rows[0];
+    // static async removeArtist(id) {
+    //     const result = await db.query(
+    //         `DELETE FROM artists
+    //          WHERE id=$1
+    //          RETURNING id`,
+    //          [id]
+    //     )
+    //     const artist = result.rows[0];
+    //     if (!artist) throw new NotFoundError(`No record for artist ${id}.`);
 
-        if (!artist) throw new NotFoundError(`Cannot remove. No artist with id ${id}`);
-
-        return artist;
-    }
+    //     return artist;
+    // }
 }
 
   module.exports = Artist;

@@ -1,10 +1,7 @@
-import React, {useEffect, useState, useContext} from 'react';
-import ArtistTrackerApi from './api';
-import userContext from './userContext';
+import React from 'react';
 import './ArtistItem.css';
 
 function ArtistItem( {artist, remove} ) {
-    //const {currUser} = useContext(userContext);
 
     const handleClick = async (evt) => {
         evt.preventDefault();

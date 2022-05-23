@@ -7,21 +7,20 @@ const { BadRequestError } = require("../errors");
  * statement.
  *
  * param dataToUpdate {Object} {field1: newVal, field2: newVal, ...}
- * @param jsToSql {Object} maps js-style data fields to database column names,
- *   like { firstName: "first_name", age: "age" }
+ * param jsToSql {Object} maps js-style data fields to database column names,
+ *   like { city: "base_city", venueCity: "venue_city" }
  *
- * @returns {Object} {sqlSetCols, dataToUpdate}
+ * Returns {Object} {sqlSetCols, dataToUpdate}
  *
- * @example {firstName: 'Aliya', age: 32} =>
- *   { setCols: '"first_name"=$1, "age"=$2',
- *     values: ['Aliya', 32] }
+ * Example {city: 'Houston', venueCity: 'Dallas'} =>
+ *   { setCols: '"base_city"=$1, "venue_city"=$2',
+ *     values: ['Houston', 'Dallas'] }
  */
 
 function sqlForUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
 
-  // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
   const cols = keys.map((colName, idx) =>
       `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );

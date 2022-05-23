@@ -2,14 +2,12 @@ import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
-/** API Class.
- *
- * Static class connects methods used to get/send to to the API.
- * 
+/**
+ * Connects methods used to get/send to to the internal API.
  */
 
 class ArtistTrackerApi {
-  // token for interaction with the API is stored here.
+  // token for interaction with the API
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
@@ -69,15 +67,15 @@ class ArtistTrackerApi {
 
   /** Get details on a user by id. */
 
-  static async getUser(id, token) {
-    try {
-      ArtistTrackerApi.token = token;
-      const res = await this.request(`users/${id}`);
-      return res.user;
-    } catch(err) {
-      console.log(err)
-    }
-  }
+  // static async getUser(id, token) {
+  //   try {
+  //     ArtistTrackerApi.token = token;
+  //     const res = await this.request(`users/${id}`);
+  //     return res.user;
+  //   } catch(err) {
+  //     console.log(err)
+  //   }
+  // }
 
   /** Update user profile. */
 
@@ -117,6 +115,18 @@ class ArtistTrackerApi {
           firstName: res.newUser.firstName, email: res.newUser.email, 
           city: res.newUser.city, radius: res.newUser.radius}
       return {token: res.token, newUser};
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  /** Delete user account */
+
+  static async deleteUserAccount(id, token) {
+    try {
+      ArtistTrackerApi.token = token;
+      const res = await this.request(`users/${id}`, {}, 'delete');
+      return res;
     } catch(err) {
       console.log(err)
     }
@@ -240,8 +250,6 @@ class ArtistTrackerApi {
       console.log(err)
     }
   }
-
-
 
  }
 

@@ -7,7 +7,6 @@ import Profile from './Profile';
 import SavedEvents from './SavedEvents';
 import SignupForm from './SignupForm';
 import Login from './Login';
-import EventList from './EventList';
 import NotFound from './NotFound';
 import AddArtistForm from './AddArtistForm';
 
@@ -23,7 +22,7 @@ function AppRoutes( {signup, login, logout, add, removeArtist}) {
                                     : <HomeGuest />}
                 />
                 <Route path='/profile/:id'
-                    element={<Profile removeArtist={removeArtist} />}
+                    element={<Profile removeArtist={removeArtist} logout={logout} />}
                 />
                 <Route path='/signup'
                     element={<SignupForm signup={signup}/>}

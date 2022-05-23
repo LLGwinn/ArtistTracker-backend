@@ -1,6 +1,6 @@
 "use strict";
 
-/** Middleware to handle common auth cases in routes. */
+/** Middleware to handle auth cases in routes. */
 
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
@@ -9,7 +9,7 @@ const { UnauthorizedError } = require("../errors");
 
 /** Middleware: Authenticate user.
  *
- * If a token was provided, verify it, and, if valid, store the token payload
+ * If a token was provided, verify it, and if valid, store the token payload
  * on res.locals.
  *
  * It's not an error if no token was provided or if the token is not valid.
@@ -50,7 +50,8 @@ function ensureLoggedIn(req, res, next) {
 function ensureCorrectUser(req, res, next) {
   try {
     const user = res.locals.user;
-    if (!(user && (user.isAdmin || user.username === req.params.username))) {
+
+    if (!(user && (user.isAdmin || user.id === +req.params.id))) {
       throw new UnauthorizedError();
     }
     return next();

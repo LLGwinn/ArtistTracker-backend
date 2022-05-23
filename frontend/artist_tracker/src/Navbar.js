@@ -21,7 +21,7 @@ function NavbarComp( {logout} ) {
                         <Nav.Link href="/">Home&nbsp;&nbsp;&nbsp;|</Nav.Link>
                         {currUser 
                             ? <Nav.Link href={`profile/${currUser.id}`}>{currUser.username}&nbsp;&nbsp;&nbsp;|</Nav.Link>
-                            : <Nav.Link href='/login'>Log In</Nav.Link>
+                            : <Nav.Link href='/login'>Log In&nbsp;&nbsp;&nbsp;|</Nav.Link>
                         }
                         {currUser 
                             ? <Nav.Link onClick={handleLogout}>Log out</Nav.Link>

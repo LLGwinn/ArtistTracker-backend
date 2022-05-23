@@ -46,7 +46,7 @@ function HomeUser( {logout} ) {
                             return <EventList key={a.artist.id} artistDetails={a.artist} cityInfo={city} radius={currUser.radius}/>;
                         
                         })
-                        : <p className='mt-5'>Looking for your saved artists...</p>
+                        : <p className='mt-5'>Save artists to automatically see upcoming shows!</p>
                     }
                     </div>
                 </div>

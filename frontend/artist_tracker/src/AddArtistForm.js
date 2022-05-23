@@ -15,7 +15,7 @@ function AddArtistForm( {add} ) {
     const [selectedArtist, setSelectedArtist] = useState({name:""});
     const [artistOptionsDisplay, setArtistOptionsDisplay] = useState(false);
 
-    const {currUser, setUsersSavedArtists} = useContext(userContext);
+    const {currUser} = useContext(userContext);
     const navigate = useNavigate();
 
     const debounceLoadArtists = useCallback(
@@ -24,7 +24,7 @@ function AddArtistForm( {add} ) {
     async function fetchArtists(str) {
         try {
             const res = await ArtistTrackerApi.getArtistsForAutocomplete(str);
-            setAutocompleteArtists(res.artist);
+            setAutocompleteArtists(res.artists);
         } catch(err) {
             console.log(err);
         }  
