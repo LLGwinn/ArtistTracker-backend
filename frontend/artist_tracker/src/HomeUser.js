@@ -14,8 +14,12 @@ function HomeUser( {logout} ) {
 
     useEffect(() => {
         async function getCityDetails() {
-            const cityRes = await ArtistTrackerApi.getCityById(currUser.city);
-            setCity(cityRes.city);
+            try{
+                const cityRes = await ArtistTrackerApi.getCityById(currUser.city);
+                setCity(cityRes.city);
+            } catch (err) {
+                console.log(err);
+            }
         }
         getCityDetails();
     }, [])
