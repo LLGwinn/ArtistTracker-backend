@@ -1,9 +1,12 @@
-INSERT INTO users
-           (username,
-            password,
-            fname,
-            email,
-            base_city,
-            distance_pref,
-            isAdmin)
-VALUES ('hpotter', '$2b$12$F/JHlc968Cd4cyScqZ19lOXn.Tp6Y4QwpLQX928chKgd36mh4o70W' , 'Harry', 'harry@hogwarts.edu', 'London', 50, true);
+SELECT e.*, a.artist_name
+          FROM users_events ue
+          JOIN events e
+          ON ue.event_id = e.id
+          JOIN artists a
+          ON e.artist = a.id
+          WHERE ue.user_id=1
+
+SELECT e.artist
+FROM users_events ue
+JOIN events e
+ON ue.event_id = e.id

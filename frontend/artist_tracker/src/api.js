@@ -161,8 +161,9 @@ class ArtistTrackerApi {
   
   /** Removes artist from users_artists for this user. */
 
-  static async removeArtistFromUser(userId, artistId) {
+  static async removeArtistFromUser(userId, artistId, token) {
     try {
+      ArtistTrackerApi.token = token;
       const res = await this.request(`users/${userId}/artists`, {artistId}, 'delete')
       return res;
     } catch(err) {
@@ -181,6 +182,7 @@ class ArtistTrackerApi {
       const res = await this.request(`events/add`, {event, userId}, 'post');
       return res;
     } catch(err) {
+      alert(err)
       console.log(err);
     }
   }
@@ -198,8 +200,9 @@ class ArtistTrackerApi {
 
   /** Removes event from users_events for this user. */
 
-  static async removeEventFromUser(userId, eventId) {
+  static async removeEventFromUser(userId, eventId, token) {
     try {
+      ArtistTrackerApi.token = token;
       const res = await this.request(`users/${userId}/events`, {eventId}, 'delete')
       return res;
     } catch(err) {

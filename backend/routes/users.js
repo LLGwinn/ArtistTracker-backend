@@ -94,7 +94,7 @@ router.delete("/:id/artists", ensureCorrectUser, async function (req, res, next)
 
 router.get("/:id/events", async function (req, res, next) {
   try {
-    const events = await User.findUserEvents(req.params.id);
+    const events = await User.findUserEvents(+req.params.id);
     return res.json({events})
   } catch(err) {
     return next(err);

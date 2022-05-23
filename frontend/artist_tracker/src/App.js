@@ -77,6 +77,7 @@ function App() {
 
   async function updateUserArtistsInState(artistArray) {
     try {
+      setUsersSavedArtists([]);
       for (let artist of artistArray) {
         const artistDetails = await ArtistTrackerApi.getArtistById(artist.id)
 

@@ -17,7 +17,7 @@ function EventList( {artistDetails, cityInfo, radius} ) {
 
     useEffect(() => {
         if (artistDetails && cityInfo.latitude) getEvents();
-    }, [cityInfo])
+    }, [])
 
     async function getEvents() {
         try {
@@ -32,8 +32,10 @@ function EventList( {artistDetails, cityInfo, radius} ) {
     async function saveEvent(e) {
         try {
             const res = await ArtistTrackerApi.addEventToUser(e, currUser.id);
-            alert(`${e.name} added to your saved events!`);
-            navigate(`/events/${currUser.id}`);
+            if (res) {
+                alert(`'${e.name}' added to your saved events!`);
+                navigate(`/events/${currUser.id}`);
+            }
         } catch(err) {
             console.log(err);
         }

@@ -43,7 +43,7 @@ City location data for use in autocomplete.
 - CSS
 
 ### Testing:
-To run all backend tests, use `jest -i` from the Capstone-2/backend/tests directory.
+To run all backend tests, use `jest -i` from the `Capstone-2/backend/tests` directory.
 
 ### Database Schema
 [Click here to see schema](https://docs.google.com/spreadsheets/d/13pP8Nzs6U3eVurl1PG3c_0opi2dEZCj3PXV9-BGEvNw/edit?usp=sharing)

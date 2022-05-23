@@ -77,7 +77,9 @@ function GuestForm() {
 
     const handleSubmit = evt => {
         evt.preventDefault();
-        setSubmitted(true);
+        if (selectedArtist.name !== "" && 
+            selectedCity.id !== "" && 
+            radius) setSubmitted(true);
     }
 
     return (
@@ -94,7 +96,8 @@ function GuestForm() {
                                 onClick={() => setArtistOptionsDisplay(true)}
                                 onChange={artistSearchChange} 
                                 value={artistSearch} 
-                                className='artistSearch'/>
+                                className='artistSearch'
+                                required/>
                     {artistOptionsDisplay && (
                         <div className='GuestForm-autocompleteContainer ps-3 mt-1'>
                             {autocompleteArtists.map(artist => {
@@ -119,7 +122,8 @@ function GuestForm() {
                                   onClick={() => setCityOptionsDisplay(true)}
                                   onChange={citySearchChange} 
                                   value={citySearch} 
-                                  className='citySearch'/>
+                                  className='citySearch'
+                                  required />
                     {cityOptionsDisplay && (
                         <div className='GuestForm-autocompleteContainer ps-3 mt-1'>
                             {autocompleteCities.map(city => {
@@ -140,7 +144,8 @@ function GuestForm() {
                     <Form.Control type="number"
                                   name="radius" 
                                   value={radius ?? ""} 
-                                  onChange={radiusChange} />
+                                  onChange={radiusChange} 
+                                  required />
                 </Form.Group>
 
                 <Button type="submit" className="mt-3">Find my artist!</Button>

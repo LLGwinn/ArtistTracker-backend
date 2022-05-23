@@ -247,7 +247,7 @@ class User {
           JOIN events e
           ON ue.event_id = e.id
           JOIN artists a
-          ON e.artist = a.artist_name
+          ON e.artist = a.id
           WHERE ue.user_id=${userId}`
     );
 

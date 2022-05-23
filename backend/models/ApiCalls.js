@@ -115,26 +115,34 @@ class ApiCalls {
      */
 
     static async getCities(str) {
-        const url = citiesURL;
-        const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
-        const res = await axios.get(
-            `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
-            {headers}
-        )
-        return res.data.data;
+        try {
+            const url = citiesURL;
+            const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
+            const res = await axios.get(
+                `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
+                {headers}
+            )
+            return res.data.data;
+        }catch (err) {
+            console.log(err)
+        }
     }
 
     /** Returns city data object based on id. */
 
     static async getCity(id) {
-        const url = `${citiesURL}/${id}`;
-        const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
+        try {
+            const url = `${citiesURL}/${id}`;
+            const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
 
-        const res = await axios.get(
-            `${url}?cityId=${id}&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
-            {headers}
-        )
-        return res.data.data;
+            const res = await axios.get(
+                `${url}?cityId=${id}&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
+                {headers}
+            )
+            return res.data.data;
+        } catch(err) {
+            console.log(err);
+        }
     }
 
     /** Retrieve city's geohash to use with radius in TM API. */

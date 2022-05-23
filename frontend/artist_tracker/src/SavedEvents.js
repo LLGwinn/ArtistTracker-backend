@@ -17,7 +17,7 @@ function SavedEvents() {
     }, [])
 
     const remove = async (e) => {
-        const message = await ArtistTrackerApi.removeEventFromUser(currUser.id, e.id);
+        const message = await ArtistTrackerApi.removeEventFromUser(currUser.id, e.id, token);
         alert(message.deleteMessage);
         const res = await ArtistTrackerApi.getEventsForUser(currUser.id);
         setUserEvents(res.events);

@@ -14,8 +14,8 @@ const router = express.Router();
 
  router.post("/add", async function (req, res, next) {
     try {
-      const message = await Event.addEvent(req.body.event, req.body.userId);
-      return res.status(201).json( message );
+      const event = await Event.addEvent(req.body.event, req.body.userId);
+      return res.status(201).json( {event} );
     } catch (err) {
       return next(err);
     }

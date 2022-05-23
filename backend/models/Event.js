@@ -27,7 +27,7 @@ const {
             [userId, event.id]
         )
         if (duplicateUsersEventsCheck.rows[0]) {
-            throw new BadRequestError (`Duplicate record in users_events.`);
+            throw new BadRequestError (`Event has already been saved!`);
         }
 
         // look for duplicate event id in events table
