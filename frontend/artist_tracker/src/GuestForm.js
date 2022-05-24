@@ -97,7 +97,7 @@ function GuestForm() {
                                 onChange={artistSearchChange} 
                                 value={artistSearch} 
                                 className='artistSearch'
-                                required/>
+                                required />
                     {artistOptionsDisplay && (
                         <div className='GuestForm-autocompleteContainer ps-3 mt-1'>
                             {autocompleteArtists.map(artist => {

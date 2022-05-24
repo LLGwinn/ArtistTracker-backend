@@ -3,8 +3,8 @@ import React from "react";
 function NotFound() {
     return(
         <>
-            <div>Weird...can't find this page...</div>
-            <button className='btn btn-primary' href='/'>Home</button>
+            <div className='my-5 display-5'>Weird... we can't find this page...</div>
+            <a className='btn btn-primary col col-2 mx-auto' href='/'>Home</a>
         </>
     )
 }

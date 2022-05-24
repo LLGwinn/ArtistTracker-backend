@@ -90,7 +90,7 @@ describe('POST /events/add', () => {
                                 venueState: 'Test State'}
         const res = await request(app).post('/events/add').send ({event, userId: 1});
         
-        expect(res.body).toEqual({user_id: 1, event_id: '9000ABC'});
+        expect(res.body).toEqual({event: {user_id: 1, event_id: '9000ABC'}});
     })
 
     test('throws error if event cannot be added to db', async () => {

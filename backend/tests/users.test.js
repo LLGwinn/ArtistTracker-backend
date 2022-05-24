@@ -35,7 +35,7 @@ beforeEach(async function() {
     // insert a test event
     await db.query(`
         INSERT INTO events (id, event_name, event_date, artist, event_url, venue, venue_city, venue_state)
-        VALUES ('9000ABC', 'Test Event Name', '${testDate}', 'Test Artist', 'https://testevent.com',
+        VALUES ('9000ABC', 'Test Event Name', '${testDate}', '1000ABC', 'https://testevent.com',
                 'Test Venue', 'Test City', 'Test State')`
         );
 

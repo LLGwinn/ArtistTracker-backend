@@ -32,8 +32,9 @@ function AddArtistForm( {add} ) {
 
     async function updateUserArtists(evt) {
         try {
-            add(selectedArtist.id, selectedArtist.name, currUser.id);
-            navigate('/');
+            if (!selectedArtist.id) alert('Please select an artist.')
+            else {add(selectedArtist.id, selectedArtist.name, currUser.id);
+            navigate('/');}
         } catch(err) {
             console.log(err);
         }
@@ -66,7 +67,8 @@ function AddArtistForm( {add} ) {
                                   onClick={() => setArtistOptionsDisplay(true)}
                                   onChange={artistSearchChange} 
                                   value={artistSearch} 
-                                  className='artistSearch mb-3'/>
+                                  required
+                                  className='artistSearch mb-3' />
                     {artistOptionsDisplay && (
                         <div className='AddArtist-autocompleteContainer ps-3 mt-1'>
                             {autocompleteArtists.map(artist => {

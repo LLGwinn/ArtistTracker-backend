@@ -67,7 +67,7 @@ function App() {
   }
 
   async function removeArtist(artistId) {
-    const message = await ArtistTrackerApi.removeArtistFromUser(currUser.id, artistId);
+    const message = await ArtistTrackerApi.removeArtistFromUser(currUser.id, artistId, token);
     const res = await ArtistTrackerApi.getArtistsForUser(currUser.id);
     setUsersSavedArtists([]);
     if(res.artists) updateUserArtistsInState(res.artists);

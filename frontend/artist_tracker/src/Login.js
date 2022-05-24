@@ -33,14 +33,16 @@ function Login( {login} ) {
                             <Form.Control type='text' 
                                         value={formData.username} 
                                         name='username'
-                                        onChange={handleChange} />
+                                        onChange={handleChange} 
+                                        required />
                         </Form.Group>
                         <Form.Group className="mx-auto mb-5 col-6">
                             <Form.Label>Password</Form.Label>
                             <Form.Control type='password' 
                                         value={formData.password} 
                                         name='password' 
-                                        onChange={handleChange}/>
+                                        onChange={handleChange}
+                                        required />
                         </Form.Group>
                         <Button variant="primary" type="submit">
                             Log in

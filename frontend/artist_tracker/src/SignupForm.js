@@ -83,7 +83,8 @@ function SignupForm( {signup} ) {
                                 <Form.Control type="text"
                                             name="username"
                                             value={formData.username}
-                                            onChange={handleChange}  />
+                                            onChange={handleChange} 
+                                            required />
                              </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3" controlId="password">
@@ -92,7 +93,8 @@ function SignupForm( {signup} ) {
                                 <Form.Control type="password"
                                             name="password" 
                                             value={formData.password}
-                                            onChange={handleChange}  />
+                                            onChange={handleChange}
+                                            required />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3" controlId="firstName">
@@ -101,7 +103,8 @@ function SignupForm( {signup} ) {
                                 <Form.Control type="text"
                                             name="firstName" 
                                             value={formData.firstName}
-                                            onChange={handleChange}  />
+                                            onChange={handleChange}
+                                            required />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3" controlId="formEmail">
@@ -110,7 +113,8 @@ function SignupForm( {signup} ) {
                                 <Form.Control type="email"
                                             name="email" 
                                             value={formData.email}
-                                            onChange={handleChange}  />
+                                            onChange={handleChange}
+                                            required />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} className="mb-3">
@@ -122,7 +126,8 @@ function SignupForm( {signup} ) {
                                             onClick={() => setCityOptionsDisplay(true)}
                                             onChange={citySearchChange} 
                                             value={citySearch} 
-                                            className='citySearch'/>
+                                            className='citySearch'
+                                            required />
                                 {cityOptionsDisplay && (
                                     <div className='autocompleteContainer ps-3 mt-1'>
                                         {autocompleteCities.map(city => {
@@ -144,7 +149,8 @@ function SignupForm( {signup} ) {
                                 <Form.Control type="number"
                                             name="radius" 
                                             value={formData.radius}
-                                            onChange={handleChange}  />
+                                            onChange={handleChange}
+                                            required />
                             </Col>
                         </Form.Group>
                         <Button type="submit" variant="primary">Submit</Button>
