@@ -148,13 +148,13 @@ function GuestForm() {
                                   required />
                 </Form.Group>
 
-                <Button type="submit" className="mt-3">Find my artist!</Button>
+                <Button type="submit" variant="dark" className="mt-3">Find my artist!</Button>
             </Form>
         </>
         :
         <>
             <EventList artistDetails={selectedArtist} cityInfo={selectedCity} radius={radius} />
-            <Button href="/" className="mt-2">New Search</Button>
+            <Button href="/" variant="dark" className="mt-2">New Search</Button>
         </>
     )
 }

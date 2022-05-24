@@ -120,7 +120,7 @@ function Profile( {removeArtist, logout} ) {
                 <p className='display-5'>{currUser.firstName}</p>
             </div>
             <div className="Profile-content row mb-3">
-                <Form className="Profile-form col p-4 border border-primary" autoComplete='off'>
+                <Form className="Profile-form col p-4 border border-dark" autoComplete='off'>
                     <h3 className="mb-4">User Info</h3>
                     <Form.Group as={Row} className="mb-3" controlId="username">
                         <Form.Label column sm={4}>Username</Form.Label>
@@ -193,11 +193,14 @@ function Profile( {removeArtist, logout} ) {
                                         onChange={handleChange} />
                         </Col>
                     </Form.Group>
-                    <Button type="submit" onChange={handleChange} onClick={handleUpdate}>
+                    <Button type="submit"
+                            className="border border-dark" 
+                            onChange={handleChange} 
+                            onClick={handleUpdate}>
                         Save changes
                     </Button>
                 </Form>
-                <div className="col p-4 border border-primary">
+                <div className="col p-4 border border-dark">
                     <h3 className="mb-4">Saved artists</h3>
                     <div className='Profile-artists mb-2 p-3'>
                         {(artists.length)
@@ -209,14 +212,14 @@ function Profile( {removeArtist, logout} ) {
                         }
                     </div>                 
                     <Button variant="primary" 
-                            className="col-6 ms-auto"
+                            className="col-6 ms-auto border border-dark"
                             onClick={addArtist}>Add an artist</Button>                        
                 </div>
             </div> 
             {/* ^ end content row */}
             <div className="row">
-                <Button variant="success" href="/" className="Profile-homeBtn col-3 my-auto">Back to my homepage</Button>
-                <Button variant="outline-danger" 
+                <Button variant="dark" href="/" className="Profile-homeBtn col-3 my-auto">Back to my homepage</Button>
+                <Button variant="outline-dark" 
                         size="sm" 
                         className='col-1 ms-auto'
                         onClick={deleteAccount}>Delete My Account</Button>

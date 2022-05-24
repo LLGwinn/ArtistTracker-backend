@@ -74,10 +74,10 @@ function SignupForm( {signup} ) {
                 <div className="row py-2">
                     <p className="display-6">Create an Account</p>
                 </div>
-            <div className="row mb-3 py-4 border border-success">
-                <div className="col-9 ">
+            <div className="row mb-3 py-4">
+                <div className="col-6 mx-auto">
                     <Form className="SignupForm" onSubmit={handleSubmit} autoComplete='off'>
-                        <Form.Group as={Row} className="mb-3" controlId="username">
+                        <Form.Group as={Row} className="mb-3 justify-content-center" controlId="username">
                             <Form.Label column sm={2}>Username</Form.Label>
                             <Col sm={4}>
                                 <Form.Control type="text"
@@ -87,7 +87,7 @@ function SignupForm( {signup} ) {
                                             required />
                              </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3" controlId="password">
+                        <Form.Group as={Row} className="mb-3 justify-content-center" controlId="password">
                             <Form.Label column sm={2}>Password</Form.Label>
                             <Col sm={4}>
                                 <Form.Control type="password"
@@ -97,7 +97,7 @@ function SignupForm( {signup} ) {
                                             required />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3" controlId="firstName">
+                        <Form.Group as={Row} className="mb-3 justify-content-center" controlId="firstName">
                             <Form.Label column sm={2}>First Name</Form.Label>
                             <Col sm={4}>
                                 <Form.Control type="text"
@@ -107,7 +107,7 @@ function SignupForm( {signup} ) {
                                             required />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3" controlId="formEmail">
+                        <Form.Group as={Row} className="mb-3 justify-content-center" controlId="formEmail">
                             <Form.Label column sm={2}>Email</Form.Label>
                             <Col sm={4}>
                                 <Form.Control type="email"
@@ -117,7 +117,7 @@ function SignupForm( {signup} ) {
                                             required />
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3">
+                        <Form.Group as={Row} className="mb-3 justify-content-center">
                             <Form.Label column sm={2}>City:</Form.Label>
                             <Col sm={4}>
                                 <Form.Control id='citySearch' 
@@ -143,7 +143,7 @@ function SignupForm( {signup} ) {
                                 )}
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="mb-3" controlId="formDistance">
+                        <Form.Group as={Row} className="mb-3 justify-content-center" controlId="formDistance">
                             <Form.Label column sm={4}>Preferred search distance (miles)</Form.Label>
                             <Col sm={2}>
                                 <Form.Control type="number"
@@ -153,7 +153,9 @@ function SignupForm( {signup} ) {
                                             required />
                             </Col>
                         </Form.Group>
-                        <Button type="submit" variant="primary">Submit</Button>
+                        <div className='row justify-content-center'>
+                            <Button className="col col-2" type="submit" variant="dark">Submit</Button>
+                        </div>
                     </Form>
                 </div>
             </div>

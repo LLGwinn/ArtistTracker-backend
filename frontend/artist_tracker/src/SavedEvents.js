@@ -35,7 +35,7 @@ function SavedEvents() {
             {(userEvents.length)
                 ? <table className='table text-light'>
                     <thead>
-                        <tr>
+                        <tr className="text-dark">
                             <th>Artist</th>
                             <th>Date</th>
                             <th>Venue</th>
@@ -54,7 +54,7 @@ function SavedEvents() {
                                     <td>{e.venue_city}</td>
                                     <td>{e.venue_state}</td>
                                     {currUser &&
-                                        <td><Button size="sm" 
+                                        <td><Button size="sm" variant="dark" 
                                                 onClick={() => window.open(e.event_url,'_blank')}>Tickets</Button></td>
                                     }
                                     <td><button className="ArtistItem-button mt-1" onClick={() => remove(e)}>X</button></td>
@@ -65,7 +65,7 @@ function SavedEvents() {
                 </table>
                 : <p>NO SAVED EVENTS</p>
             }
-            <Button href="/">Home</Button>
+            <Button variant="dark" href="/">Home</Button>
         </div>
     )
 }

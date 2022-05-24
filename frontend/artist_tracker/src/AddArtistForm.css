@@ -8,9 +8,10 @@
     text-align: left;
     font-size: smaller;
     font-style: italic;
-    background-color: lightblue;
+    background-color: lightgray;
     color: black;
     width: 40%;
     margin:auto;
     cursor: pointer;
+    border-radius: 2px;
 }

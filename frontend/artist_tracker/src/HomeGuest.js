@@ -16,12 +16,12 @@ function HomeGuest() {
                 <div className="col-3 p-4">
                     <div className="Home-right row mb-3 justify-content-center">
                         <p>Already have an account?</p>
-                        <Button className="col-6" href="/login">Log In</Button>
+                        <Button className="col-6" variant="dark" href="/login">Log In</Button>
                     </div>
                     <div className="Home-right row mb-3 justify-content-center">
                         <p>Create an account to save your favorite artists!</p> 
                         <p>Every time you log in, you'll see a list of their shows near you!</p>
-                        <Button className="col-6" href="/signup">
+                        <Button className="col-6" variant="dark" href="/signup">
                             Sign me up!
                         </Button>
                     </div>

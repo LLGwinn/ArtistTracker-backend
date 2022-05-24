@@ -1,5 +1,6 @@
 .SignupForm {
-    text-align: left;
-    justify-content: left;
+    text-align: right;
+    justify-content: center;
+    align-items: center;
     padding: 10px;
 }

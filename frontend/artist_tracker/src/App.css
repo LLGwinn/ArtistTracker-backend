@@ -1,15 +1,15 @@
 .App {
   text-align: center;
   font-size: 1rem;
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  background-color:steelblue;
   min-height: 100vh;
 }
 
 .App-main {
-  /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
-  color: white;
+  color: black;
 }
 
 

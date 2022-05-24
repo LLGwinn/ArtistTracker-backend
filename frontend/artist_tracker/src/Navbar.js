@@ -14,7 +14,7 @@ function NavbarComp( {logout} ) {
 
     return (
         <>
-            <Navbar bg="light" variant="light">
+            <Navbar bg="dark" variant="dark">
                 <Container>
                     <Navbar.Brand href="/">Artist Tracker</Navbar.Brand>
                     <Nav className="mr-auto">

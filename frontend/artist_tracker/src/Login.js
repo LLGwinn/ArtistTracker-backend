@@ -44,7 +44,7 @@ function Login( {login} ) {
                                         onChange={handleChange}
                                         required />
                         </Form.Group>
-                        <Button variant="primary" type="submit">
+                        <Button variant="dark" type="submit">
                             Log in
                         </Button>
                     </Form>

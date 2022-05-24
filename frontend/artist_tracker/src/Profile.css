@@ -18,13 +18,14 @@
     color: black;
     width: 90%;
     margin:auto;
+    border-radius: 2px;
     cursor: pointer;
 }
 
 .Profile-artists {
     justify-content: center;
     overflow-y: scroll;
-    height: 340px;
+    height: 330px;
 }
 
 .Profile-homeBtn {

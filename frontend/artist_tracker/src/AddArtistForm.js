@@ -84,10 +84,11 @@ function AddArtistForm( {add} ) {
                         </div>
                     )}
                 </Form.Group>
-                <Button variant='success'
+                <Button variant='dark'
                         className='mt-5'
                         onClick={updateUserArtists}>Add this artist to my favorites!</Button>
             </Form>
+            <a className='btn btn-outline-dark col col-2 mt-5 mx-auto' href='/'>Home</a>
         </div>
     )
 
