@@ -1,8 +1,10 @@
 "use strict";
 
-require("dotenv").config({path:__dirname+'/home/ells/Bootcamp/ArtistTracker-backend.env'});
+//require("dotenv").config({path:__dirname+'/home/ells/Bootcamp/ArtistTracker-backend.env'});
 //require("dotenv").config({path:__dirname+'.env'});
 //require("dotenv").config();
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, './.env') })
 require("colors");
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret-capstone2";
