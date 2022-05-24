@@ -4,10 +4,8 @@ const axios = require ('axios');
 
 const tmURL = 'https://app.ticketmaster.com';
 const citiesURL = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
-//const {TICKETMASTER_API_KEY, GEOCITIES_API_KEY} = require ('../config.js'); 
-const {envs} = require ('../config.js');
-const TICKETMASTER_API_KEY = envs.TICKETMASTER_API_KEY;
-const GEOCITIES_API_KEY = envs.GEOCITIES_API_KEY;
+const {TICKETMASTER_API_KEY, GEOCITIES_API_KEY} = require ('../config.js'); 
+
 
 class ApiCalls {
 
@@ -20,7 +18,7 @@ class ApiCalls {
      */
 
     static async getArtistsByKeyword(name) {
-        if (!envs.TICKETMASTER_API_KEY) {
+        if (!TICKETMASTER_API_KEY) {
             throw new Error('TICKETMASTER API KEY NOT FOUND');
         }
         // get artists matching name
