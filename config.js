@@ -1,10 +1,8 @@
 "use strict";
 
-//require("dotenv").config({path:__dirname+'/home/ells/Bootcamp/Capstone-2/backend/.env'});
+require("dotenv").config({path:__dirname+'/home/ells/Bootcamp/ArtistTracker-backend.env'});
 //require("dotenv").config({path:__dirname+'.env'});
 require("dotenv").config();
-//console.log(require("dotenv").config())
-require("colors");
 require("colors");
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret-capstone2";
@@ -26,7 +24,6 @@ const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
 
 console.log("PORT:".yellow, PORT.toString());
 console.log("Database:".yellow, getDatabaseUri());
-console.log("---");
 
 module.exports = {
   SECRET_KEY,
