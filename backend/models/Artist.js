@@ -77,24 +77,6 @@ const {
 
         return artist;
     }
-
-    // /** Remove artist with given id from artists table, delete cascades to users_artists.
-    //  * 
-    //  *  Returns undefined
-    //  */
-
-    // static async removeArtist(id) {
-    //     const result = await db.query(
-    //         `DELETE FROM artists
-    //          WHERE id=$1
-    //          RETURNING id`,
-    //          [id]
-    //     )
-    //     const artist = result.rows[0];
-    //     if (!artist) throw new NotFoundError(`No record for artist ${id}.`);
-
-    //     return artist;
-    // }
 }
 
   module.exports = Artist;

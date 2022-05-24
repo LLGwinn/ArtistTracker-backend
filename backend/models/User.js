@@ -101,42 +101,6 @@ class User {
     return user;
   }
 
-  // /** Given a user id, return data about user.
-  //  *
-  //  * Returns { username, firstName, artists, events }
-  //  *   where artists is { id, artist_name }
-  //  *   and events is {id, event_name}
-  //  *  TODO: need to fix the artists/events return
-  //  *
-  //  * Throws NotFoundError if user not found.
-  //  **/
-
-  // static async getUser(id) {
-  //   const userRes = await db.query(
-  //         `SELECT username,
-  //                 fname AS "firstName",
-  //                 email,
-  //                 base_city AS "city",
-  //                 radius
-  //          FROM users
-  //          WHERE id = $1`,
-  //       [id],
-  //   );
-
-  //   const user = userRes.rows[0];
-
-  //   if (!user) throw new NotFoundError(`No user with id ${id}`);
-
-  //   const userArtistsRes = await db.query(
-  //         `SELECT ua.artist_id
-  //          FROM users_artists ua
-  //          WHERE ua.user_id = $1`, [id]);
-
-  //   user.artists = userArtistsRes.rows.map(a => a.artist_id);
-  //   return user;
-  // }
-
-
   /** Update user profile data.
    *
    * This is a "partial update" --- it's fine if data doesn't contain

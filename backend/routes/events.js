@@ -1,7 +1,6 @@
 "use strict";
 
 const express = require("express");
-const { ensureAdmin } = require("../middleware/auth");
 const Event = require("../models/Event");
 
 const router = express.Router();
@@ -32,20 +31,5 @@ router.get("/:id", async function (req, res, next) {
       return next(err);
     }
   });
-
-
-// /** DELETE /events/[id]  =>  { deleted: id }
-//  *
-//  *  Authorization required: admin
-//  **/
-
-// router.delete("/:id", ensureAdmin, async function (req, res, next) {
-//     try {
-//       const message = await Artist.removeEvent(req.params.id);
-//       return res.json( message )
-//     } catch (err) {
-//       return next(err);
-//     }
-//   });
 
   module.exports = router;

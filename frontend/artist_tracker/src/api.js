@@ -65,18 +65,6 @@ class ArtistTrackerApi {
    *    USER ROUTES
    ***********************/
 
-  /** Get details on a user by id. */
-
-  // static async getUser(id, token) {
-  //   try {
-  //     ArtistTrackerApi.token = token;
-  //     const res = await this.request(`users/${id}`);
-  //     return res.user;
-  //   } catch(err) {
-  //     console.log(err)
-  //   }
-  // }
-
   /** Update user profile. */
 
   static async updateUser(user, token) {

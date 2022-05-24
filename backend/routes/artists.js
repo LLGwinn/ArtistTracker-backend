@@ -1,9 +1,6 @@
 "use strict";
 
-/** Routes for artists. */
-
 const express = require("express");
-const { ensureAdmin } = require("../middleware/auth");
 const Artist = require("../models/Artist");
 
 const router = express.Router();
@@ -36,20 +33,5 @@ router.get("/:id", async function (req, res, next) {
       return next(err);
     }
 });
-
-
-// /** DELETE /artists/[id]  =>  { deleted: id }
-//  *
-//  *  Authorization required: admin
-//  **/
-
-// router.delete("/:id", ensureAdmin, async function (req, res, next) {
-//     try {
-//       await Artist.removeArtist(req.params.id);
-//       return res.json({ deleted_artist: req.params.id });
-//     } catch (err) {
-//       return next(err);
-//     }
-//   });
 
   module.exports = router;

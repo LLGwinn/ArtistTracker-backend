@@ -1,15 +1,11 @@
 "use strict";
 
-/** Routes for users. */
-
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUser, ensureAdmin } = require("../middleware/auth");
+const { ensureCorrectUser } = require("../middleware/auth");
 const { BadRequestError } = require("../errors");
 const User = require("../models/User");
-const { createToken } = require("../helpers/token");
-const newUserSchema = require("../schemas/user-new.json");
 const updateUserSchema = require("../schemas/user-update.json");
 
 const router = express.Router();
