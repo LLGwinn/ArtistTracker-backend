@@ -49,20 +49,12 @@ function getDatabaseUri() {
 }
 
 let envs;
-console.log('RESULT.PARSED', result.parsed)
 
 if (!('error' in result)) {
   envs = result.parsed;
 } else {
-  envs = {};
+  envs[TICKETMASTER_API_KEY] = process.env.TICKETMASTER_API_KEY;
+  envs[GEOCITIES_API_KEY] = process.env.GEOCITIES_API_KEY;
+}
 
-  (process.env).forEach((value, key) => {
-    if (key === TICKETMASTER_API_KEY || key === GEOCITIES_API_KEY) {
-      envs[key] = value;
-    }
-  })
-  // _.each(process.env, (value, key) => envs[key] = value);
-
-  }
-  console.log('ENVS', envs)
 module.exports = {envs, SECRET_KEY, PORT, BCRYPT_WORK_FACTOR, getDatabaseUri};
