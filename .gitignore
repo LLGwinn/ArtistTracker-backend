@@ -1,26 +1,2 @@
-node_modules/
-
-backend/node_modules
-backend/.env
-
-# dependencies
-frontend/artist_tracker/node_modules
-frontend/artist_tracker/.pnp
-frontend/artist_tracker/.pnp.js
-
-# testing
-frontend/artist_tracker/coverage
-
-# production
-frontend/artist_tracker/build
-
-# misc
-frontend/artist_tracker/.DS_Store
-frontend/artist_tracker/.env.local
-frontend/artist_tracker/.env.development.local
-frontend/artist_tracker/.env.test.local
-frontend/artist_tracker/.env.production.local
-
-frontend/artist_tracker/npm-debug.log*
-frontend/artist_tracker/yarn-debug.log*
-frontend/artist_tracker/yarn-error.log*
+node_modules
+.env

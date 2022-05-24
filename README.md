@@ -44,8 +44,8 @@ City location data for use in autocomplete.
 - CSS
 ***
 ### Testing:
-To run all backend tests, use `jest -i` from the `Capstone-2/backend/tests` directory.<br>
-To run the frontend tests, use `npm test` from the `Capstone-2/frontend/artist_tracker` directory.
+To run all backend tests, use `jest -i` from the `tests` directory.<br>
+To run the frontend tests, head over to the ArtistTracker-frontend git and use `npm test` from the `artist_tracker` directory.
 ***
 ### Database Schema
 [Click here to see schema](https://docs.google.com/spreadsheets/d/13pP8Nzs6U3eVurl1PG3c_0opi2dEZCj3PXV9-BGEvNw/edit?usp=sharing)
