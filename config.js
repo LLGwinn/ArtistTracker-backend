@@ -48,7 +48,7 @@ function getDatabaseUri() {
       : process.env.DATABASE_URL || "artist_tracker";
 }
 
-let envs;
+let envs = {};
 
 if (!('error' in result)) {
   envs = result.parsed;
