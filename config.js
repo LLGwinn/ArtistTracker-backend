@@ -51,8 +51,10 @@ function getDatabaseUri() {
 let envs = {};
 
 if (!('error' in result)) {
+  console.log('***************ERROR*********')
   envs = result.parsed;
 } else {
+  console.log('*********NO ERROR***************')
   envs[TICKETMASTER_API_KEY] = process.env.TICKETMASTER_API_KEY;
   envs[GEOCITIES_API_KEY] = process.env.GEOCITIES_API_KEY;
 }
