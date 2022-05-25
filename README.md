@@ -1,6 +1,6 @@
 # Artist Tracker
 
-link to app will go here
+Click this link to starting experimenting with [Artist Tracker](https://my-artisttracker.surge.sh)!
 
 ![Landing Page](/static/screenshot-landing.jpg)
 ![User Homepage](static/screenshot-userhome.jpg)
