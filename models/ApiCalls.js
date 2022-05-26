@@ -112,7 +112,7 @@ class ApiCalls {
     }
 
     /** Returns array of city data objects to use in autocomplete,
-     *  minimum population 20000, sorted by decreasing population.
+     *  minimum population 10000, sorted by decreasing population.
      */
 
     static async getCities(str) {
@@ -120,7 +120,7 @@ class ApiCalls {
             const url = citiesURL;
             const headers = { 'x-rapidapi-key':GEOCITIES_API_KEY };
             const res = await axios.get(
-                `${url}?namePrefix=${str}&sort=-population&minPopulation=20000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
+                `${url}?namePrefix=${str}&sort=-population&minPopulation=10000&apiKey=${GEOCITIES_API_KEY}&countryIds=US`,
                 {headers}
             )
             return res.data.data;
